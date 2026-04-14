@@ -383,28 +383,22 @@ body {
 }
 
 .panel.active-left {
-  background: linear-gradient(135deg, #FF6B6B, #E53E3E);
-  box-shadow: 0 6px 30px rgba(229,62,62,0.5);
+  background: linear-gradient(135deg, #74B9FF, #0984e3);
+  box-shadow: 0 6px 30px rgba(116,185,255,0.5);
   transform: scale(1.03);
-  border-color: #E53E3E;
+  border-color: #74B9FF;
 }
 .panel.active-left .panel-arrow,
 .panel.active-left .panel-label { color: white; }
 
 .panel.active-right {
-  background: linear-gradient(135deg, #63B3ED, #3182CE);
-  box-shadow: 0 6px 30px rgba(49,130,206,0.5);
+  background: linear-gradient(135deg, #FD79A8, #e84393);
+  box-shadow: 0 6px 30px rgba(253,121,168,0.5);
   transform: scale(1.03);
-  border-color: #3182CE;
+  border-color: #FD79A8;
 }
 .panel.active-right .panel-arrow,
 .panel.active-right .panel-label { color: white; }
-
-/* Subtle resting tint so left=red, right=blue is always visible */
-#panelLeft  { border-color: rgba(229,62,62,0.4);  background: rgba(229,62,62,0.07); }
-#panelLeft  .panel-arrow { color: rgba(229,62,62,0.45); }
-#panelRight { border-color: rgba(49,130,206,0.4); background: rgba(49,130,206,0.07); }
-#panelRight .panel-arrow { color: rgba(49,130,206,0.45); }
 
 .panel.correct {
   background: linear-gradient(135deg, #00B894, #00a381);
@@ -501,6 +495,9 @@ body {
   max-width: 480px;
   text-align: center;
   transition: background 0.3s, border-color 0.3s;
+  transform: scale(0.82);
+  transform-origin: top center;
+  margin-bottom: -12%;
 }
 
 .results-emoji { font-size: clamp(40px, 10vw, 52px); margin-bottom: 8px; line-height: 1; }
