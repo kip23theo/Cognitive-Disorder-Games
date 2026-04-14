@@ -17,6 +17,11 @@
   function getTheme() { return localStorage.getItem(THEME_KEY) || 'light'; }
 
   function clamp(v) { return Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, parseFloat(v) || 1)); }
+
+  function isGamePage() {
+    return getComputedStyle(document.body).overflow === 'hidden';
+  }
+
   function applyZoom(z) {
     z = clamp(z);
     localStorage.setItem(ZOOM_KEY, z);
@@ -24,10 +29,14 @@
     if (w) {
       w.style.transform = 'scale(' + z + ')';
       w.style.transformOrigin = 'top center';
-      // Compensate width so content doesn't get clipped
       w.style.width = Math.round(10000 / z) / 100 + '%';
-      // Push footer down proportionally
-      w.style.marginBottom = Math.round((z - 1) * 100) + 'px';
+      if (isGamePage()) {
+        // Game pages: fixed viewport — no extra margin needed
+        w.style.marginBottom = '';
+      } else {
+        // Scrollable pages (index, settings): push content down so nothing clips
+        w.style.marginBottom = Math.round((z - 1) * 100) + 'px';
+      }
     }
     updateZoomUI(z);
     return z;
