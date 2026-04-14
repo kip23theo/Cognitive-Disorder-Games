@@ -140,6 +140,11 @@ body {
 .screen { display: none; flex-direction: column; width: 100%; flex: 1; overflow: hidden; }
 .screen.active { display: flex; }
 
+/* Game screen reserves space for the fixed bottom controls */
+#gameScreen.active {
+  padding-bottom: calc(78px + max(env(safe-area-inset-bottom), 0px));
+}
+
 /* ── MENU ── */
 .menu-body {
   flex: 1;
@@ -299,10 +304,8 @@ body {
   flex-direction: column;
   overflow: hidden;
   min-height: 0;
-  padding: 4px max(env(safe-area-inset-right),8px) 0 max(env(safe-area-inset-left),8px);
+  padding: 4px max(env(safe-area-inset-right),8px) 4px max(env(safe-area-inset-left),8px);
   gap: 4px;
-  /* Reserve space for fixed bottom controls bar */
-  padding-bottom: calc(70px + max(env(safe-area-inset-bottom), 10px));
 }
 
 .stats-bar { display: flex; gap: 5px; flex-shrink: 0; }
@@ -329,7 +332,7 @@ body {
   position: relative;
   background: #2d3748;
   min-height: 0;
-  /* No max-height cap — canvas fills remaining space above fixed bottom controls */
+  min-height: 200px; /* fallback so canvas is never flat */
   display: flex;
   width: 100%;
 }
@@ -355,11 +358,12 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 8px max(env(safe-area-inset-right), 12px) max(env(safe-area-inset-bottom), 10px) max(env(safe-area-inset-left), 12px);
+  padding: 10px max(env(safe-area-inset-right), 12px) max(env(safe-area-inset-bottom), 12px) max(env(safe-area-inset-left), 12px);
   background: var(--bg);
   border-top: 1px solid var(--border);
   z-index: 100;
   transition: background 0.3s;
+  flex-direction: row; /* SIDE BY SIDE — never stacked */
 }
 .controls-row.visible { display: flex; }
 
@@ -476,7 +480,7 @@ body {
   .stat-box { padding: 4px 6px; }
   .stat-value { font-size: 16px; }
   .stat-label { font-size: 9px; }
-  .controls-row { flex-direction: column; padding-bottom: 0; gap: 6px; }
+  .controls-row { flex-direction: row; padding: 6px max(env(safe-area-inset-right),8px) max(env(safe-area-inset-bottom),6px) max(env(safe-area-inset-left),8px); gap: 8px; }
   .lane-btn { min-height: 44px; font-size: 13px; padding: 8px; border-radius: 10px; }
   .status-msg { font-size: 11px; }
 
@@ -701,13 +705,18 @@ function resizeCanvas() {
   if (!wrapper) return;
   const rect = wrapper.getBoundingClientRect();
   const dpr = window.devicePixelRatio || 1;
-  CANVAS_W = Math.round(rect.width * dpr);
-  CANVAS_H = Math.round(rect.height * dpr);
+  // Use offsetWidth/Height as fallback if getBoundingClientRect returns 0
+  const cssW = rect.width  || wrapper.offsetWidth  || 360;
+  const cssH = rect.height || wrapper.offsetHeight || 480;
+  // Guard: if height is suspiciously small (canvas looks horizontal), skip
+  if (cssH < 80) { setTimeout(resizeCanvas, 80); return; }
+  CANVAS_W = Math.round(cssW * dpr);
+  CANVAS_H = Math.round(cssH * dpr);
   const canvas = document.getElementById('roadCanvas');
-  canvas.width = CANVAS_W;
+  canvas.width  = CANVAS_W;
   canvas.height = CANVAS_H;
-  canvas.style.width  = rect.width + 'px';
-  canvas.style.height = rect.height + 'px';
+  canvas.style.width  = cssW + 'px';
+  canvas.style.height = cssH + 'px';
   updateLanePositions();
 }
 
@@ -744,7 +753,19 @@ function applyLandscapeLayout() {
   setTimeout(resizeCanvas, 50);
 }
 
-window.addEventListener('resize', () => { applyLandscapeLayout(); });
+window.addEventListener('resize', () => {
+  applyLandscapeLayout();
+  if (G.running || G.carY > 0) {
+    requestAnimationFrame(() => {
+      resizeCanvas();
+      if (CANVAS_H > 80) {
+        G.carY = CANVAS_H - Math.round(CANVAS_H * 0.18);
+        G.carX = G.carLane === 'left' ? LEFT_LANE_X : RIGHT_LANE_X;
+        G.carTargetX = G.carX;
+      }
+    });
+  }
+});
 window.addEventListener('orientationchange', () => setTimeout(() => { applyLandscapeLayout(); resizeCanvas(); }, 150));
 
 // ─── ROAD GEOMETRY ──────────────────────────────────────────────────────────
@@ -886,17 +907,22 @@ function startCountdown() {
 // ─── GAME ───────────────────────────────────────────────────────────────────
 function startGame() {
   resetGame(); showScreen('gameScreen');
+  // Wait for DOM layout to fully settle (fixed bar + padding-bottom applied)
   setTimeout(() => {
     resizeCanvas();
-    G.carX = LEFT_LANE_X; G.carTargetX = LEFT_LANE_X;
-    G.carY = CANVAS_H - Math.round(CANVAS_H * 0.18);
-    updateHUD(); setStatus('Dodge the obstacles!', '');
-    highlightLane('left');
-    G.running = true;
-    G.unsubscribe = InputHandler.subscribe(onInput);
-    scheduleSpawn();
-    animId = requestAnimationFrame(gameLoop);
-  }, 80);
+    // Double-check after another paint cycle
+    requestAnimationFrame(() => {
+      resizeCanvas();
+      G.carX = LEFT_LANE_X; G.carTargetX = LEFT_LANE_X;
+      G.carY = CANVAS_H - Math.round(CANVAS_H * 0.18);
+      updateHUD(); setStatus('Dodge the obstacles!', '');
+      highlightLane('left');
+      G.running = true;
+      G.unsubscribe = InputHandler.subscribe(onInput);
+      scheduleSpawn();
+      animId = requestAnimationFrame(gameLoop);
+    });
+  }, 120);
 }
 
 function stopGame() {
