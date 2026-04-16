@@ -499,14 +499,15 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
   }
 
   /* Road sits on the RIGHT, takes all leftover space */
-  .road-wrapper {
-    flex: 1;
-    border-radius: 10px;
-    min-height: 0;
-    max-height: none;
-    height: 100%;
-    order: 2; /* push canvas to the right */
-  }
+ .road-wrapper {
+  flex: 1;
+  border-radius: 10px;
+  min-height: 0;
+  max-height: 85vh;
+  height: auto;
+  align-self: center;
+  order: 2;
+}
 
   /* Left column: stats + status + buttons */
   .right-col {
