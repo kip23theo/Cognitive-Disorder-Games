@@ -3,6 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" id="metaViewport">
+<script>
+// Apply zoom=0.5 viewport for landscape phones ASAP before render
+(function(){
+  var meta = document.getElementById('metaViewport');
+  function check() {
+    var W = window.screen.width, H = window.screen.height;
+    var landscape = W > H;
+    var phone = Math.min(W,H) <= 500;
+    if (landscape && phone) {
+      meta.content = 'width=device-width, initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5, user-scalable=no, viewport-fit=cover';
+    } else {
+      meta.content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover';
+    }
+  }
+  check();
+  window.addEventListener('orientationchange', function(){ setTimeout(check, 150); });
+})();
+</script>
 <title>Road Runner · Cognitive Training Games</title>
 <style>
 /* ═══ CSS VARIABLES ═══ */
@@ -568,7 +586,10 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
-/* ── LANDSCAPE ZOOM: handled by JS transform:scale ── */
+/* ── LANDSCAPE ZOOM: viewport initial-scale=0.5 via JS + CSS zoom fallback ── */
+@media (orientation: landscape) and (max-height: 450px) {
+  html { zoom: 0.55; }
+}
 </style>
 </head>
 <body>
@@ -1493,49 +1514,18 @@ wireBtn('backToMenuBtn', goToMenu);
 </script>
 <script src="shared.js" onerror="void 0"></script>
 <script>
-/* ── Landscape zoom: transform:scale to fit everything on screen ── */
-(function() {
-  var wrap = document.getElementById('ctg-zoom-wrap');
-  var SCALE = 0.65; // zoom level — lower = more zoomed out
-
-  function applyLandscapeZoom() {
-    var W = window.innerWidth;
-    var H = window.innerHeight;
-    var isLandscape = W > H;
-    var isPhone = H <= 520;
-
-    if (isLandscape && isPhone) {
-      // Scale the entire wrapper down
-      wrap.style.transform = 'scale(' + SCALE + ')';
-      wrap.style.transformOrigin = 'top left';
-      wrap.style.width = (W / SCALE) + 'px';
-      wrap.style.height = (H / SCALE) + 'px';
-      wrap.style.position = 'absolute';
-      wrap.style.top = '0';
-      wrap.style.left = '0';
-      document.body.style.overflow = 'hidden';
-      document.body.style.width = W + 'px';
-      document.body.style.height = H + 'px';
-    } else {
-      // Reset
-      wrap.style.transform = '';
-      wrap.style.transformOrigin = '';
-      wrap.style.width = '';
-      wrap.style.height = '';
-      wrap.style.position = '';
-      wrap.style.top = '';
-      wrap.style.left = '';
-      document.body.style.overflow = '';
-      document.body.style.width = '';
-      document.body.style.height = '';
-    }
+// Re-check viewport on resize (handles rotation after load)
+window.addEventListener('resize', function(){
+  var meta = document.getElementById('metaViewport');
+  if (!meta) return;
+  var W = window.screen.width, H = window.screen.height;
+  var landscape = W > H;
+  var phone = Math.min(W,H) <= 500;
+  if (landscape && phone) {
+    meta.content = 'width=device-width, initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5, user-scalable=no, viewport-fit=cover';
+  } else {
+    meta.content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover';
   }
-
-  applyLandscapeZoom();
-  window.addEventListener('resize', applyLandscapeZoom);
-  window.addEventListener('orientationchange', function() {
-    setTimeout(applyLandscapeZoom, 200);
-  });
-})();
+});
 </script>
 </html>
