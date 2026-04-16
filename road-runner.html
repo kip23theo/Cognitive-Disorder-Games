@@ -473,38 +473,41 @@ body {
 
 /* ══ LANDSCAPE ══ */
 @media (orientation: landscape) and (max-height: 600px) {
-  /* Scale the entire game down so car + buttons all fit on screen */
+  /* Zoom out entire page so road + right panel all fit */
   #ctg-zoom-wrap {
-    transform: scale(0.68);
+    transform: scale(0.6);
     transform-origin: top left;
-    width: calc(100vw / 0.68);
-    height: calc(100dvh / 0.68);
+    width: calc(100vw / 0.6);
+    height: calc(100dvh / 0.6);
   }
 
-  .header { min-height: 44px; padding-top: max(env(safe-area-inset-top),5px); padding-bottom: 5px; }
-  .back-btn { min-height: 34px; font-size: 13px; padding: 5px 10px; }
+  .header { min-height: 40px; padding-top: max(env(safe-area-inset-top),4px); padding-bottom: 4px; }
+  .back-btn { min-height: 32px; font-size: 13px; padding: 4px 10px; }
   .level-badge { font-size: 12px; padding: 4px 10px; }
-  .game-title { font-size: 16px; }
+  .game-title { font-size: 15px; }
 
-  .game-layout { flex-direction: row; padding: 6px max(env(safe-area-inset-right),8px) max(env(safe-area-inset-bottom),6px) max(env(safe-area-inset-left),8px); gap: 8px; }
-  .road-wrapper { flex: 1; border-radius: 12px; }
-  .right-col { width: 130px; flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; }
-  .stats-bar { flex-direction: column; gap: 4px; }
-  .stat-box { padding: 4px 6px; }
+  /* Game layout: road on left, right column on right */
+  .game-layout { flex-direction: row; padding: 6px 8px 6px 8px; gap: 8px; }
+  .road-wrapper { flex: 1; border-radius: 12px; min-height: 0; }
+  .right-col { width: 150px; flex-shrink: 0; display: flex; flex-direction: column; gap: 6px; }
+  .stats-bar { flex-direction: column; gap: 5px; }
+  .stat-box { padding: 5px 6px; }
   .stat-value { font-size: 16px; }
   .stat-label { font-size: 9px; }
-  /* Controls now inside zoom-wrap: switch from fixed to relative */
+  .status-msg { font-size: 11px; text-align: center; }
+
+  /* Lane buttons: stacked vertically inside right-col, NOT fixed */
   .controls-row {
-    position: relative !important;
-    bottom: auto !important;
-    left: auto !important;
-    right: auto !important;
-    flex-direction: row;
-    padding: 6px 12px 8px 12px;
-    gap: 12px;
+    position: static !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border-top: none !important;
+    width: 100% !important;
   }
-  .lane-btn { min-height: 48px; font-size: 15px; padding: 10px 12px; border-radius: 12px; }
-  .status-msg { font-size: 11px; }
+  .lane-btn { min-height: 44px; font-size: 13px; padding: 8px 6px; border-radius: 10px; flex: 1; }
 
   .menu-body {
     flex-direction: row;
@@ -753,22 +756,30 @@ function applyLandscapeLayout() {
   if (isLandscape && !landscapeMode) {
     const col = document.createElement('div');
     col.id = 'rightCol'; col.className = 'right-col';
-    const stats  = document.getElementById('statsBar');
-    const status = document.getElementById('statusMsg');
-    col.appendChild(stats); col.appendChild(status);
+    const stats    = document.getElementById('statsBar');
+    const status   = document.getElementById('statusMsg');
+    const controls = document.getElementById('controlsRow');
+    col.appendChild(stats);
+    col.appendChild(status);
+    if (controls) col.appendChild(controls);
     layout.appendChild(col);
+    // Make controls visible since they're now in the column
+    if (controls) controls.classList.add('visible');
     landscapeMode = true;
   } else if (!isLandscape && landscapeMode) {
     const col = document.getElementById('rightCol');
     if (col) {
-      while (col.firstChild) layout.insertBefore(col.firstChild, layout.firstChild);
+      const stats    = document.getElementById('statsBar');
+      const road     = document.getElementById('roadWrapper');
+      const status   = document.getElementById('statusMsg');
+      const controls = document.getElementById('controlsRow');
       col.remove();
-      const stats  = document.getElementById('statsBar');
-      const road   = document.getElementById('roadWrapper');
-      const status = document.getElementById('statusMsg');
       layout.innerHTML = '';
       layout.appendChild(stats); layout.appendChild(road);
       layout.appendChild(status);
+      // Move controls back outside zoom-wrap as fixed bottom bar
+      const zoomWrap = document.getElementById('ctg-zoom-wrap');
+      if (controls && zoomWrap) zoomWrap.parentNode.insertBefore(controls, zoomWrap.nextSibling);
     }
     landscapeMode = false;
   }
