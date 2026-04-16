@@ -503,9 +503,13 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
   flex: 1;
   border-radius: 10px;
   min-height: 0;
-  max-height: 85vh;
+
+  /* 🔥 THIS IS THE FIX */
+  max-height: 75vh;   /* reduce from full height */
+
   height: auto;
   align-self: center;
+
   order: 2;
 }
 
