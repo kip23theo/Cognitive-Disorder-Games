@@ -4,11 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" id="metaViewport">
 <script>
-// Apply viewport for landscape phones ASAP before render
 (function(){
   var meta = document.getElementById('metaViewport');
   function check() {
-    // Always use scale=1 — the flex layout fills the screen correctly
     meta.content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover';
   }
   check();
@@ -17,7 +15,6 @@
 </script>
 <title>Road Runner · Cognitive Training Games</title>
 <style>
-/* ═══ CSS VARIABLES ═══ */
 :root {
   --bg:           #F8F6F3;
   --surface:      #FFFFFF;
@@ -47,7 +44,6 @@
   --shadow-md:    0 4px 20px rgba(0,0,0,0.4);
 }
 
-/* ═══ RESET ═══ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { height: 100%; }
 
@@ -73,7 +69,6 @@ body {
   transform-origin: top center;
 }
 
-/* ── HEADER ── */
 .header {
   display: flex;
   align-items: center;
@@ -148,18 +143,14 @@ body {
 }
 .settings-link:hover { background: var(--border); }
 
-/* ── SCREENS ── */
 .screen { display: none; flex-direction: column; width: 100%; flex: 1; overflow: hidden; }
 .screen.active { display: flex; }
 
-/* Portrait: reserve space for fixed bottom controls */
 #gameScreen.active {
   padding-bottom: calc(78px + max(env(safe-area-inset-bottom), 0px));
 }
-/* Landscape: buttons are inline so no bottom padding needed */
 body.ls-active #gameScreen.active { padding-bottom: 0; }
 
-/* ── MENU ── */
 .menu-body {
   flex: 1;
   overflow-y: auto;
@@ -270,7 +261,6 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
   touch-action: manipulation;
 }
 
-/* ── COUNTDOWN ── */
 .countdown-wrap {
   display: flex;
   flex-direction: column;
@@ -290,28 +280,6 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
 }
 .countdown-num.pop { transform: scale(1.3); opacity: 0.6; }
 
-/* ── GAME SCREEN ── */
-/*
- * ╔══════════════════════════════════════════════════════════════╗
- * ║  ZOOM / LAYOUT FIX — HOW IT WORKS                          ║
- * ║                                                              ║
- * ║  Root cause: the road-wrapper had flex:1 with NO max-height, ║
- * ║  so it expanded to fill all remaining space on tall phones,  ║
- * ║  pushing the status msg + lane buttons below the viewport.   ║
- * ║                                                              ║
- * ║  Fix applied here (no transform:scale needed):               ║
- * ║  1. .game-layout  → padding 4px, gap 4px  (was 8px/8px)     ║
- * ║  2. .stat-box     → padding 4px  (was 6px)                  ║
- * ║  3. .stat-value   → font clamp 15px (was 18px)              ║
- * ║  4. .road-wrapper → max-height calc() cap so buttons always  ║
- * ║                     stay on-screen                           ║
- * ║  5. .lane-btn     → padding 12px (was 14px), min-height 50px ║
- * ║  6. .status-msg   → min-height 18px (was 24px)              ║
- * ║                                                              ║
- * ║  To adjust further: tweak max-height in .road-wrapper below  ║
- * ║  or change padding/gap in .game-layout.                      ║
- * ╚══════════════════════════════════════════════════════════════╝
- */
 .game-layout {
   flex: 1;
   display: flex;
@@ -327,7 +295,7 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
 .stat-box {
   background: var(--surface);
   border-radius: 10px;
-  padding: 4px 6px; /* ← was 6px 6px */
+  padding: 4px 6px;
   text-align: center;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border);
@@ -335,9 +303,8 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
   transition: background 0.3s, border-color 0.3s;
 }
 .stat-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.7px; color: var(--text-light); font-weight: 600; }
-.stat-value { font-size: clamp(15px, 4vw, 20px); font-weight: 700; color: var(--text); line-height: 1.2; } /* ← was clamp(18px,5vw,24px) */
+.stat-value { font-size: clamp(15px, 4vw, 20px); font-weight: 700; color: var(--text); line-height: 1.2; }
 
-/* ── ROAD AREA ── */
 .road-wrapper {
   flex: 1;
   border-radius: 14px;
@@ -346,8 +313,6 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
   position: relative;
   background: #2d3748;
   min-height: 0;
-  /* Portrait: cap height so canvas never hides behind fixed buttons.
-     Header ~52px + stats ~40px + status ~18px + buttons ~78px + gaps ~12px = ~200px */
   max-height: calc(100dvh - 200px);
   display: flex;
   width: 100%;
@@ -365,11 +330,10 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
 }
 .collision-flash.flash { background: rgba(225,112,85,0.4); }
 
-/* ── TOUCH CONTROLS ── */
+/* ── PORTRAIT: fixed bottom controls ── */
 .controls-row {
-  display: none; /* hidden until game starts */
+  display: none;
   gap: 10px;
-  /* Fixed at bottom — always visible, thumb-friendly */
   position: fixed;
   bottom: 0;
   left: 0;
@@ -379,7 +343,7 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
   border-top: 1px solid var(--border);
   z-index: 100;
   transition: background 0.3s;
-  flex-direction: row; /* SIDE BY SIDE — never stacked */
+  flex-direction: row;
 }
 .controls-row.visible { display: flex; }
 
@@ -404,22 +368,20 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
 .lane-btn.active-left  { box-shadow: 0 2px 20px rgba(229,62,62,0.5); }
 .lane-btn.active-right { box-shadow: 0 2px 20px rgba(49,130,206,0.5); }
 
-/* Left button always red, right always blue */
 #btnLeft,  .btn-red  { color: #fff; background: #E53E3E; border-color: #C53030; box-shadow: 0 2px 12px rgba(229,62,62,0.35); }
 #btnRight, .btn-blue { color: #fff; background: #3182CE; border-color: #2B6CB0; box-shadow: 0 2px 12px rgba(49,130,206,0.35); }
 
 .status-msg {
-  font-size: clamp(12px, 3vw, 15px); /* ← was clamp(13px,3.5vw,16px) */
+  font-size: clamp(12px, 3vw, 15px);
   font-weight: 600;
   color: var(--text-light);
   text-align: center;
-  min-height: 18px; /* ← was 24px */
+  min-height: 18px;
   flex-shrink: 0;
 }
 .status-msg.danger { color: var(--accent); }
 .status-msg.good   { color: var(--success); }
 
-/* ── RESULTS ── */
 .results-scroll {
   flex: 1;
   overflow-y: auto;
@@ -482,79 +444,111 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
   transition: background 0.3s, border-color 0.3s;
 }
 
-/* ══ LANDSCAPE ══ */
+/* ══ LANDSCAPE FIX ══
+   Goal: left column = stats + status + BOTH buttons stacked vertically,
+   all fitting within the available height with no overflow.
+   Key changes vs original:
+   - .right-col uses height:100% + overflow:hidden so it never exceeds viewport
+   - .controls-row height is split equally with stats via flex weights
+   - .lane-btn min-height removed, uses flex:1 + height:0 trick instead
+   - Road canvas max-height bumped to allow more room now buttons are lateral
+*/
 @media (orientation: landscape) and (max-height: 600px) {
   /* Compact header */
-  .header { min-height: 40px; padding-top: max(env(safe-area-inset-top),4px); padding-bottom: 4px; }
+  .header {
+    min-height: 40px;
+    padding-top: max(env(safe-area-inset-top),4px);
+    padding-bottom: 4px;
+  }
   .back-btn { min-height: 32px; font-size: 12px; padding: 4px 9px; }
   .level-badge { font-size: 11px; padding: 3px 9px; }
   .game-title { font-size: 15px; }
 
-  /* Game layout: left-col (stats+buttons) | road canvas on the RIGHT */
+  /* Game layout: left-col | road canvas */
   .game-layout {
     flex-direction: row;
-    padding: 5px max(env(safe-area-inset-right),8px) max(env(safe-area-inset-bottom),5px) max(env(safe-area-inset-left),8px);
-    gap: 8px;
+    padding: 4px max(env(safe-area-inset-right),6px) max(env(safe-area-inset-bottom),4px) max(env(safe-area-inset-left),6px);
+    gap: 6px;
     align-items: stretch;
+    overflow: hidden;        /* ← prevent ANY child from escaping */
   }
 
-  /* Road sits on the RIGHT, takes all leftover space */
- .road-wrapper {
-  flex: 1;
-  border-radius: 10px;
-  min-height: 0;
+  /* Road on the RIGHT */
+  .road-wrapper {
+    flex: 1;
+    border-radius: 10px;
+    min-height: 0;
+    max-height: none;        /* ← let the flex row control height */
+    height: auto;
+    align-self: stretch;     /* fill full column height */
+    order: 2;
+  }
 
-  /* 🔥 THIS IS THE FIX */
-  max-height: 70vh;   /* reduce from full height */
-
-  height: auto;
-  align-self: center;
-
-  order: 2;
-}
-
-  /* Left column: stats + status + buttons */
+  /* ── LEFT COLUMN: fixed width, full height, no overflow ── */
   .right-col {
-    width: clamp(130px, 30vw, 190px);
+    /* Fixed width — wide enough for readable buttons */
+    width: clamp(120px, 28vw, 170px);
     flex-shrink: 0;
+
+    /* Fill the available game-layout height exactly */
+    height: 100%;
+    overflow: hidden;        /* ← THE KEY FIX: clip anything that overflows */
+
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    justify-content: space-between;
-    order: 1; /* panel on the LEFT */
+    gap: 4px;
+    order: 1;
   }
 
-  /* Stats stack vertically in left col */
-  .stats-bar { flex-direction: column; gap: 4px; flex: 1; }
-  .stat-box { padding: 5px 8px; }
-  .stat-value { font-size: clamp(16px, 3.2vh, 22px); }
-  .stat-label { font-size: 9px; }
-  .status-msg { font-size: 11px; min-height: 14px; text-align: center; }
+  /* Stats stack vertically, take ~40% of left-col height */
+  .stats-bar {
+    flex-direction: column;
+    gap: 3px;
+    flex: 0 0 auto;          /* don't grow/shrink — fixed to content */
+  }
+  .stat-box { padding: 4px 6px; }
+  .stat-value { font-size: clamp(14px, 2.8vh, 20px); }
+  .stat-label { font-size: 8px; }
 
-  /* Buttons inside left-col, stacked vertically */
+  .status-msg {
+    font-size: 10px;
+    min-height: 12px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  /* ── BUTTONS: take all remaining space in left col, stacked ── */
   .controls-row {
-    position: static !important;
+    position: static !important;   /* escape fixed positioning */
     flex-direction: column !important;
     padding: 0 !important;
     background: transparent !important;
     border-top: none !important;
-    gap: 6px !important;
+    gap: 4px !important;
     width: 100%;
-    flex-shrink: 0;
+    flex: 1;                       /* fill remaining height */
+    min-height: 0;                 /* allow flex shrink */
+    overflow: hidden;
   }
+
   .lane-btn {
-    min-height: 46px;
-    flex: 1;
-    font-size: clamp(13px, 2.8vh, 17px);
-    padding: 0 8px;
+    flex: 1;                       /* each button takes equal height */
+    min-height: 0 !important;      /* remove the 54px floor — let flex decide */
+    height: 0;                     /* flex:1 + height:0 = equal split trick */
+    font-size: clamp(11px, 2.2vh, 15px);
+    padding: 4px 6px;
     border-radius: 10px;
-    gap: 4px;
+    gap: 3px;
     font-weight: 800;
+    border-width: 2px;
   }
 
   /* Menu landscape */
   .menu-body {
-    flex-direction: row; flex-wrap: nowrap; align-items: stretch; overflow: hidden;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    overflow: hidden;
     padding: 6px max(env(safe-area-inset-right),8px) max(env(safe-area-inset-bottom),6px) max(env(safe-area-inset-left),8px);
     gap: 8px;
   }
@@ -588,14 +582,11 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
-
-/* ── LANDSCAPE: layout fills screen naturally, no forced zoom needed ── */
 </style>
 </head>
 <body>
 <div id="ctg-zoom-wrap" style="min-height:100dvh;display:flex;flex-direction:column;">
 
-<!-- ── HEADER (persistent) ── -->
 <div class="header">
   <a href="index.html" class="back-btn">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -608,7 +599,6 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
   </div>
 </div>
 
-<!-- ══ MENU ══ -->
 <div class="screen active" id="menuScreen">
   <div class="menu-body">
     <div class="menu-hero">
@@ -645,13 +635,11 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
           One hit ends the game — dodge everything!
         </div>
       </div>
-
       <button class="start-btn" id="startBtn">▶ Start Game</button>
     </div>
   </div>
 </div>
 
-<!-- ══ COUNTDOWN ══ -->
 <div class="screen" id="countdownScreen">
   <div class="countdown-wrap">
     <div class="countdown-label">Get ready to drive!</div>
@@ -660,10 +648,8 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
   </div>
 </div>
 
-<!-- ══ GAME SCREEN ══ -->
 <div class="screen" id="gameScreen">
   <div class="game-layout" id="gameLayout">
-
     <div class="stats-bar" id="statsBar">
       <div class="stat-box">
         <div class="stat-label">Score</div>
@@ -685,18 +671,15 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
     </div>
 
     <div class="status-msg" id="statusMsg">Dodge the obstacles!</div>
-
   </div>
 </div>
 
-<!-- ══ RESULTS ══ -->
 <div class="screen" id="resultsScreen">
   <div class="results-scroll">
     <div class="results-card">
       <div class="results-emoji" id="resultsEmoji">⭐</div>
       <div class="results-title" id="resultsTitle">Well Done!</div>
       <div class="results-msg"   id="resultsMsg">Great effort!</div>
-
       <div class="results-grid">
         <div class="result-stat">
           <div class="stat-label">Final Score</div>
@@ -715,7 +698,6 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
           <div class="stat-value" id="finalDistance">0m</div>
         </div>
       </div>
-
       <div class="btn-row">
         <button class="btn-primary"   id="playAgainBtn">▶ Play Again</button>
         <button class="btn-secondary" id="backToMenuBtn">Back to Menu</button>
@@ -726,7 +708,7 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
 
 </div><!-- /ctg-zoom-wrap -->
 
-<!-- ── FIXED BOTTOM CONTROLS (shown only during gameplay) ── -->
+<!-- FIXED BOTTOM CONTROLS (portrait only) -->
 <div class="controls-row" id="controlsRow">
   <button class="lane-btn btn-red active-left" id="btnLeft"
     onclick="SoundEngine.init(); onInput('left')">
@@ -739,63 +721,35 @@ body.ls-active #gameScreen.active { padding-bottom: 0; }
 </div>
 
 <script>
-// ─── THEME: apply immediately ───────────────────────────────────────────────
 (function() {
   var t = localStorage.getItem('ctg-theme') || 'light';
   document.documentElement.setAttribute('data-theme', t);
 })();
 
-// ─── CANVAS SIZING ──────────────────────────────────────────────────────────
 const LOGICAL_W = 400, LOGICAL_H = 520;
 let CANVAS_W = LOGICAL_W, CANVAS_H = LOGICAL_H;
 
 function resizeCanvas() {
   const wrapper = document.getElementById('roadWrapper');
   if (!wrapper) return;
-
-  // Force layout refresh
   wrapper.getBoundingClientRect();
-
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
   const maxW = wrapper.offsetWidth  || 360;
   const maxH = wrapper.offsetHeight || 300;
-
-  // Guard: wait until layout is ready
-  if (maxW < 10 || maxH < 10) {
-    setTimeout(resizeCanvas, 80);
-    return;
-  }
-
-  // 🔥 FIX: maintain aspect ratio (prevents compression)
- const aspect = LOGICAL_H / LOGICAL_W;
-
-const isLandscape = window.innerWidth > window.innerHeight;
-
-// 🔥 shrink width in landscape so buttons are clickable
-let cssW = isLandscape ? maxW * 0.65 : maxW;
-let cssH = cssW * aspect;
-
-if (cssH > maxH) {
-  cssH = maxH;
-  cssW = cssH / aspect;
-}
-  // Apply resolution scaling
+  if (maxW < 10 || maxH < 10) { setTimeout(resizeCanvas, 80); return; }
+  const aspect = LOGICAL_H / LOGICAL_W;
+  const isLandscape = window.innerWidth > window.innerHeight;
+  let cssW = isLandscape ? maxW * 0.70 : maxW;
+  let cssH = cssW * aspect;
+  if (cssH > maxH) { cssH = maxH; cssW = cssH / aspect; }
   CANVAS_W = Math.round(cssW * dpr);
   CANVAS_H = Math.round(cssH * dpr);
-
   const canvas = document.getElementById('roadCanvas');
-
   canvas.width  = CANVAS_W;
   canvas.height = CANVAS_H;
-
   canvas.style.width  = cssW + 'px';
   canvas.style.height = cssH + 'px';
-
-  // Update lanes based on new size
   updateLanePositions();
-
-  // Keep car inside bounds after resize
   if (G && G.running) {
     G.carY = Math.min(G.carY, CANVAS_H - Math.round(CANVAS_H * 0.10));
     G.carX = G.carLane === 'left' ? LEFT_LANE_X : RIGHT_LANE_X;
@@ -803,7 +757,6 @@ if (cssH > maxH) {
   }
 }
 
-// ─── LANDSCAPE LAYOUT ───────────────────────────────────────────────────────
 let landscapeMode = false;
 
 function isLandscapeQuery() {
@@ -812,12 +765,11 @@ function isLandscapeQuery() {
 
 function applyLandscapeLayout() {
   const isLandscape = isLandscapeQuery();
-  const layout      = document.getElementById('gameLayout');
-  const controls    = document.getElementById('controlsRow');
+  const layout   = document.getElementById('gameLayout');
+  const controls = document.getElementById('controlsRow');
   if (!layout || !controls) return;
 
   if (isLandscape && !landscapeMode) {
-    // ── Enter landscape: left col = stats + status + buttons; canvas goes RIGHT ──
     document.body.classList.add('ls-active');
 
     const col = document.createElement('div');
@@ -827,22 +779,19 @@ function applyLandscapeLayout() {
     const status = document.getElementById('statusMsg');
     col.appendChild(stats);
     col.appendChild(status);
-    col.appendChild(controls); // buttons inside left col
+    col.appendChild(controls);
 
-    // Insert left col BEFORE the road wrapper so it appears on the left
     const road = document.getElementById('roadWrapper');
     layout.insertBefore(col, road);
 
     landscapeMode = true;
 
   } else if (!isLandscape && landscapeMode) {
-    // ── Exit landscape: restore portrait layout ──
     document.body.classList.remove('ls-active');
 
     const col = document.getElementById('rightCol');
     if (col) {
       document.body.appendChild(controls);
-
       const stats  = document.getElementById('statsBar');
       const road   = document.getElementById('roadWrapper');
       const status = document.getElementById('statusMsg');
@@ -866,7 +815,6 @@ window.addEventListener('orientationchange', () => {
   setTimeout(() => { applyLandscapeLayout(); resizeCanvas(); }, 200);
 });
 
-// ─── ROAD GEOMETRY ──────────────────────────────────────────────────────────
 let ROAD_LEFT, ROAD_RIGHT, ROAD_W, LANE_W, LEFT_LANE_X, RIGHT_LANE_X;
 
 function updateLanePositions() {
@@ -884,7 +832,6 @@ function CAR_H() { return Math.round(CANVAS_H * CAR_H_F); }
 function OBS_W() { return Math.round(CANVAS_W * OBS_W_F); }
 function OBS_H() { return Math.round(CANVAS_H * OBS_H_F); }
 
-// ─── SOUND ENGINE ───────────────────────────────────────────────────────────
 const SoundEngine = {
   ctx: null,
   init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
@@ -919,7 +866,6 @@ const SoundEngine = {
   }
 };
 
-// ─── INPUT HANDLER ──────────────────────────────────────────────────────────
 const InputHandler = {
   listeners: [], lastInput: 0, DEBOUNCE: 100,
   init() {
@@ -937,7 +883,6 @@ const InputHandler = {
   clearAll()     { this.listeners = []; }
 };
 
-// ─── LEVELS ─────────────────────────────────────────────────────────────────
 const LEVELS = [
   { speed: 2.0, spawnInterval: 4000 },
   { speed: 2.8, spawnInterval: 3500 },
@@ -947,7 +892,6 @@ const LEVELS = [
   { speed: 6.0, spawnInterval: 1800 },
 ];
 
-// ─── GAME STATE ─────────────────────────────────────────────────────────────
 let G = {};
 let animId = null, spawnTimer = null;
 
@@ -963,14 +907,13 @@ function resetGame() {
   };
 }
 
-// ─── SCREENS ────────────────────────────────────────────────────────────────
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const controls = document.getElementById('controlsRow');
   if (id === 'gameScreen') {
     if (controls) controls.classList.add('visible');
-    applyLandscapeLayout(); // must run before resizeCanvas
+    applyLandscapeLayout();
     setTimeout(resizeCanvas, 60);
   } else {
     if (controls) controls.classList.remove('visible');
@@ -989,7 +932,6 @@ function goToMenu() {
   showScreen('menuScreen');
 }
 
-// ─── COUNTDOWN ──────────────────────────────────────────────────────────────
 function startCountdown() {
   SoundEngine.init(); stopGame(); showScreen('countdownScreen');
   let count = 3;
@@ -1006,21 +948,17 @@ function startCountdown() {
   }, 1000);
 }
 
-// ─── GAME ───────────────────────────────────────────────────────────────────
 function startGame() {
   resetGame(); showScreen('gameScreen');
-  // Give the DOM time to settle: layout shift from applyLandscapeLayout
-  // + fixed→inline button change needs multiple frames on some devices
   function beginAfterSettle() {
     resizeCanvas();
     requestAnimationFrame(() => {
-      resizeCanvas(); // second pass
+      resizeCanvas();
       requestAnimationFrame(() => {
-        resizeCanvas(); // third pass — guarantees wrapper has final size
+        resizeCanvas();
         G.carX        = LEFT_LANE_X;
         G.carTargetX  = LEFT_LANE_X;
         G.carY        = CANVAS_H - Math.round(CANVAS_H * 0.25);
-        // Safety clamp: car must be at least 10% from bottom edge
         G.carY = Math.min(G.carY, CANVAS_H - Math.round(CANVAS_H * 0.10));
         updateHUD(); setStatus('Dodge the obstacles!', '');
         highlightLane('left');
@@ -1042,7 +980,6 @@ function stopGame() {
   InputHandler.clearAll();
 }
 
-// ─── INPUT ──────────────────────────────────────────────────────────────────
 function onInput(dir) {
   if (!G.running || G.paused) return;
   if (dir === G.carLane) return;
@@ -1060,7 +997,6 @@ function highlightLane(lane) {
   r.className = 'lane-btn btn-blue' + (lane === 'right' ? ' active-right' : '');
 }
 
-// ─── SPAWN ──────────────────────────────────────────────────────────────────
 function scheduleSpawn() {
   if (!G.running) return;
   const cfg = LEVELS[G.levelIdx];
@@ -1080,7 +1016,6 @@ function randomColor() {
   return ['#E17055','#FD79A8','#6C5CE7','#FDCB6E'][Math.floor(Math.random()*4)];
 }
 
-// ─── GAME LOOP ───────────────────────────────────────────────────────────────
 function gameLoop() {
   if (!G.running) return;
   if (!G.paused) update();
@@ -1092,22 +1027,18 @@ function update() {
   const cfg = LEVELS[G.levelIdx];
   const speed = cfg.speed;
   const carW = CAR_W(), carH = CAR_H(), obsW = OBS_W(), obsH = OBS_H();
-
   G.carX += (G.carTargetX - G.carX) * 0.18;
   G.roadOffset = (G.roadOffset + speed) % 60;
   G.dashOffset = (G.dashOffset + speed) % 80;
   G.distance  += speed * 0.05;
   G.score     += Math.round(speed * 0.1);
-
   for (let i = G.obstacles.length - 1; i >= 0; i--) {
     const obs = G.obstacles[i];
     obs.y += speed;
-
     if (!obs.passed && obs.y > G.carY + carH) {
       obs.passed = true; G.dodged++; G.score += 5;
       SoundEngine.playDodge(); checkLevelUp();
     }
-
     if (!obs.nearMissChecked && obs.y > G.carY - 20 && obs.y < G.carY + carH + 20) {
       obs.nearMissChecked = true;
       if (obs.lane !== G.carLane) {
@@ -1116,11 +1047,9 @@ function update() {
         setTimeout(() => { if (G.running) setStatus('Dodge the obstacles!', ''); }, 800);
       }
     }
-
     if (!obs.passed && collision(obs, carW, carH, obsW, obsH)) { handleCollision(); return; }
     if (obs.y > CANVAS_H + obsH) G.obstacles.splice(i, 1);
   }
-
   G.frameCount++;
   updateHUD();
 }
@@ -1153,7 +1082,6 @@ function checkLevelUp() {
   }
 }
 
-// ─── DRAW ───────────────────────────────────────────────────────────────────
 function draw() {
   const canvas = document.getElementById('roadCanvas');
   const ctx = canvas.getContext('2d');
@@ -1223,9 +1151,8 @@ function drawCar(ctx) {
   const cw = CAR_W(), ch = CAR_H();
   const cx = G.carX, cy = G.carY;
   const x = cx - cw/2;
-  const t = performance.now() / 1000; // time in seconds for animation
+  const t = performance.now() / 1000;
 
-  // ── DROP SHADOW ──
   ctx.save();
   ctx.shadowColor = 'rgba(0,0,0,0.50)';
   ctx.shadowBlur  = Math.round(cw * 0.40);
@@ -1236,35 +1163,30 @@ function drawCar(ctx) {
   ctx.fill();
   ctx.restore();
 
-  // ── ANIMATED EXHAUST PUFFS (rear, bottom of car) ──
   const exhaustPhase = (t * 3) % 1;
   for (let i = 0; i < 3; i++) {
     const p = ((exhaustPhase + i / 3) % 1);
     const puffY = cy + ch * 0.96 + p * ch * 0.18;
     const puffR = cw * 0.06 * (1 - p * 0.5);
     const puffAlpha = 0.35 * (1 - p);
-    // left exhaust
     ctx.save();
     ctx.globalAlpha = puffAlpha;
     ctx.fillStyle = '#aaa';
     ctx.beginPath();
     ctx.ellipse(cx - cw * 0.18, puffY, puffR * 1.3, puffR, 0, 0, Math.PI * 2);
     ctx.fill();
-    // right exhaust
     ctx.beginPath();
     ctx.ellipse(cx + cw * 0.18, puffY, puffR * 1.3, puffR, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
 
-  // ── CAR BODY — rounded compact shape ──
   const bodyTop = cy + ch * 0.03;
   const bodyBot = cy + ch * 0.97;
   const bodyL   = x  + cw * 0.08;
   const bodyR   = x  + cw * 0.92;
   const bodyRad = cw * 0.22;
 
-  // Main body gradient: vivid red with specular shine
   ctx.save();
   const bodyGrad = ctx.createLinearGradient(bodyL, cy, bodyR, cy);
   bodyGrad.addColorStop(0,    '#c0392b');
@@ -1277,8 +1199,7 @@ function drawCar(ctx) {
   if (ctx.roundRect) {
     ctx.roundRect(bodyL, bodyTop, bodyR - bodyL, bodyBot - bodyTop, bodyRad);
   } else {
-    // manual rounded rect fallback
-    const bw = bodyR - bodyL, bh = bodyBot - bodyTop, r = bodyRad;
+    const r = bodyRad;
     ctx.moveTo(bodyL + r, bodyTop);
     ctx.lineTo(bodyR - r, bodyTop);
     ctx.quadraticCurveTo(bodyR, bodyTop, bodyR, bodyTop + r);
@@ -1293,7 +1214,6 @@ function drawCar(ctx) {
   ctx.fill();
   ctx.restore();
 
-  // ── ROOF / CABIN (darker red oval in center) ──
   ctx.save();
   const roofGrad = ctx.createRadialGradient(cx, cy + ch*0.42, 0, cx, cy + ch*0.42, cw * 0.30);
   roofGrad.addColorStop(0, '#922b21');
@@ -1304,7 +1224,6 @@ function drawCar(ctx) {
   ctx.fill();
   ctx.restore();
 
-  // ── WINDSHIELD (front, translucent blue-white) ──
   ctx.save();
   const wsGrad = ctx.createLinearGradient(cx - cw*0.20, cy + ch*0.14, cx + cw*0.20, cy + ch*0.28);
   wsGrad.addColorStop(0, 'rgba(200,235,255,0.82)');
@@ -1314,14 +1233,12 @@ function drawCar(ctx) {
   if (ctx.roundRect) ctx.roundRect(cx - cw*0.22, cy + ch*0.13, cw*0.44, ch*0.16, cw*0.07);
   else ctx.rect(cx - cw*0.22, cy + ch*0.13, cw*0.44, ch*0.16);
   ctx.fill();
-  // glare streak
   ctx.fillStyle = 'rgba(255,255,255,0.45)';
   ctx.beginPath();
   ctx.ellipse(cx - cw*0.07, cy + ch*0.185, cw*0.06, ch*0.04, -0.4, 0, Math.PI*2);
   ctx.fill();
   ctx.restore();
 
-  // ── REAR WINDOW ──
   ctx.save();
   ctx.fillStyle = 'rgba(140,200,240,0.55)';
   ctx.beginPath();
@@ -1330,7 +1247,6 @@ function drawCar(ctx) {
   ctx.fill();
   ctx.restore();
 
-  // ── BODY SHINE STRIPE (center highlight) ──
   ctx.save();
   const shineGrad = ctx.createLinearGradient(cx, bodyTop, cx, bodyBot);
   shineGrad.addColorStop(0,   'rgba(255,255,255,0.28)');
@@ -1343,7 +1259,6 @@ function drawCar(ctx) {
   ctx.fill();
   ctx.restore();
 
-  // ── HEADLIGHTS (front, animated warm glow) ──
   const glowPulse = 0.78 + 0.22 * Math.sin(t * 4);
   function drawHeadlight(hx, hy) {
     ctx.save();
@@ -1359,7 +1274,6 @@ function drawCar(ctx) {
   drawHeadlight(cx - cw*0.16, cy + ch*0.04);
   drawHeadlight(cx + cw*0.16 - cw*0.14, cy + ch*0.04);
 
-  // ── DRL STRIP (front) ──
   ctx.save();
   ctx.strokeStyle = `rgba(255,255,190,${0.55 * glowPulse})`;
   ctx.lineWidth = Math.max(1.5, ch * 0.016);
@@ -1370,7 +1284,6 @@ function drawCar(ctx) {
   ctx.stroke();
   ctx.restore();
 
-  // ── TAILLIGHTS (rear, animated red glow) ──
   const tailGlow = 0.75 + 0.25 * Math.sin(t * 3.5 + 1.0);
   function drawTaillight(tx, ty) {
     ctx.save();
@@ -1387,7 +1300,6 @@ function drawCar(ctx) {
   drawTaillight(cx - cw*0.16, tlY);
   drawTaillight(cx + cw*0.02, tlY);
 
-  // ── REAR LIGHT BAR ──
   ctx.save();
   ctx.strokeStyle = `rgba(255,60,60,${0.55 * tailGlow})`;
   ctx.lineWidth = Math.max(1.5, ch * 0.014);
@@ -1398,26 +1310,21 @@ function drawCar(ctx) {
   ctx.stroke();
   ctx.restore();
 
-  // ── SIDE DOOR LINES ──
   ctx.save();
   ctx.strokeStyle = 'rgba(0,0,0,0.18)';
   ctx.lineWidth = Math.max(1, cw * 0.025);
   ctx.lineCap = 'round';
-  // left edge crease
   ctx.beginPath();
   ctx.moveTo(bodyL + cw*0.04, cy + ch*0.25);
   ctx.lineTo(bodyL + cw*0.04, cy + ch*0.72);
   ctx.stroke();
-  // right edge crease
   ctx.beginPath();
   ctx.moveTo(bodyR - cw*0.04, cy + ch*0.25);
   ctx.lineTo(bodyR - cw*0.04, cy + ch*0.72);
   ctx.stroke();
   ctx.restore();
-
 }
 
-// ─── HUD ────────────────────────────────────────────────────────────────────
 function updateHUD() {
   document.getElementById('scoreDisplay').textContent  = Math.round(G.score);
   document.getElementById('dodgedDisplay').textContent = G.dodged;
@@ -1429,7 +1336,6 @@ function setStatus(msg, cls) {
   el.textContent = msg; el.className = 'status-msg ' + cls;
 }
 
-// ─── RESULTS ────────────────────────────────────────────────────────────────
 function showResults() {
   SoundEngine.playGameOver();
   const dodged = G.dodged;
@@ -1437,7 +1343,6 @@ function showResults() {
   if (dodged >= 15)     { emoji = '🌟'; title = 'Fantastic!'; msg = 'Outstanding driving! You have excellent reflexes!'; }
   else if (dodged >= 8) { emoji = '⭐'; title = 'Well Done!'; msg = 'Great effort! Keep practising to go even further!'; }
   else                  { emoji = '👏'; title = 'Good Try!';  msg = "You'll do even better next time! Every run counts!"; }
-
   document.getElementById('resultsEmoji').textContent    = emoji;
   document.getElementById('resultsTitle').textContent    = title;
   document.getElementById('resultsMsg').textContent      = msg;
@@ -1449,7 +1354,6 @@ function showResults() {
   showScreen('resultsScreen');
 }
 
-// ─── PAUSE ON BLUR ──────────────────────────────────────────────────────────
 document.addEventListener('visibilitychange', () => {
   if (document.hidden && G.running) {
     G.paused = true; setStatus('Paused — return to continue', '');
@@ -1458,7 +1362,6 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-// ─── INIT ───────────────────────────────────────────────────────────────────
 InputHandler.init();
 resetGame();
 updateLanePositions();
@@ -1483,11 +1386,11 @@ wireBtn('backToMenuBtn', goToMenu);
 </script>
 <script src="shared.js" onerror="void 0"></script>
 <script>
-// Re-check viewport on resize (handles rotation after load)
 window.addEventListener('resize', function(){
   var meta = document.getElementById('metaViewport');
   if (!meta) return;
   meta.content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover';
 });
 </script>
+</body>
 </html>
