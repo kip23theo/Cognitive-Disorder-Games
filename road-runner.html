@@ -62,6 +62,12 @@ body {
   -webkit-user-select: none;
   touch-action: manipulation;
   transition: background 0.3s, color 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 #ctg-zoom-wrap {
@@ -71,6 +77,9 @@ body {
   flex-direction: column;
   overflow: hidden;
   transform-origin: top center;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ── HEADER ── */
@@ -330,6 +339,8 @@ body.ls-active #gameScreen.active {
   min-height: 0;
   padding: 3px max(env(safe-area-inset-right),8px) 3px max(env(safe-area-inset-left),8px);
   gap: 3px;
+  align-items: stretch;
+  width: 100%;
 }
 
 .stats-bar { display: flex; gap: 5px; flex-shrink: 0; }
@@ -356,10 +367,11 @@ body.ls-active #gameScreen.active {
   position: relative;
   background: #2d3748;
   min-height: 0;
-  /* Portrait: header~52 + stats~32 + status~18 + buttons~52 + gaps~20 = ~174px */
-  max-height: calc(100dvh - 174px);
+  /* Portrait: header~52 + stats~42 + status~22 + buttons~50 + gaps~24 = ~190px */
+  max-height: calc(100dvh - 190px);
   display: flex;
   width: 100%;
+  align-self: center;
 }
 
 #roadCanvas { display: block; width: 100%; height: 100%; }
@@ -387,6 +399,8 @@ body.ls-active #gameScreen.active {
   transition: background 0.3s;
   flex-direction: row;
   flex-shrink: 0;
+  justify-content: center;
+  align-items: stretch;
 }
 .controls-row.visible { display: flex; }
 
@@ -499,8 +513,8 @@ body.ls-active #gameScreen.active {
   flex-direction: column;
   gap: 4px;
   z-index: 200;
-  opacity: 0;
-  pointer-events: none;
+  opacity: 1;
+  pointer-events: all;
   transition: opacity 0.25s;
 }
 .zoom-controls.visible {
@@ -508,12 +522,12 @@ body.ls-active #gameScreen.active {
   pointer-events: all;
 }
 .zoom-btn {
-  width: 34px; height: 34px;
-  border-radius: 8px;
+  width: 42px; height: 42px;
+  border-radius: 10px;
   border: 1.5px solid var(--border);
   background: var(--surface);
   color: var(--text);
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
@@ -525,15 +539,19 @@ body.ls-active #gameScreen.active {
 }
 .zoom-btn:active { background: var(--surface2); }
 .zoom-label {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--text-light);
   text-align: center;
   letter-spacing: 0.5px;
+  background: var(--surface);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  padding: 2px 4px;
 }
 
 /* ══ LANDSCAPE ══ */
-@media (orientation: landscape) and (max-height: 600px) {
+@media (orientation: landscape) and (max-height: 600px) and (min-aspect-ratio: 1/1) {
   /* Compact header */
   .header {
     min-height: 38px;
@@ -895,7 +913,9 @@ function resizeCanvas() {
 let landscapeMode = false;
 
 function isLandscapeQuery() {
-  return window.matchMedia('(orientation: landscape) and (max-height: 600px)').matches;
+  // True landscape = wider than tall AND short height (phone landscape mode)
+  return window.matchMedia('(orientation: landscape) and (max-height: 600px)').matches
+    && window.innerWidth > window.innerHeight;
 }
 
 function applyLandscapeLayout() {
@@ -1584,9 +1604,9 @@ window.addEventListener('resize', function(){
 (function() {
   var ZOOM_KEY   = 'ctg-zoom-level';
   var ZOOM_STEP  = 0.05;
-  var ZOOM_MIN   = 0.35;
+  var ZOOM_MIN   = 0.5;
   var ZOOM_MAX   = 1.20;
-  var currentZoom = parseFloat(localStorage.getItem(ZOOM_KEY) || '0.75');
+  var currentZoom = parseFloat(localStorage.getItem(ZOOM_KEY) || '1.0');
 
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
@@ -1596,30 +1616,23 @@ window.addEventListener('resize', function(){
     var label = document.getElementById('zoomLabel');
     if (!wrap) return;
 
-    var isLandscape = isLandscapeQuery();
-
     if (Math.abs(currentZoom - 1) < 0.001) {
       wrap.style.transform       = '';
       wrap.style.transformOrigin = '';
       wrap.style.width           = '';
       wrap.style.height          = '';
       wrap.style.marginLeft      = '';
-    } else if (isLandscape) {
-      // Landscape: top-left origin + margin offset to re-centre
-      var offset = Math.round((1 - currentZoom) * 50 * 100) / 100;
-      wrap.style.transformOrigin = 'top left';
-      wrap.style.transform       = 'scale(' + currentZoom + ')';
-      wrap.style.width           = (100 / currentZoom).toFixed(4) + '%';
-      wrap.style.height          = (100 / currentZoom).toFixed(4) + 'vh';
-      wrap.style.marginLeft      = offset + 'vw';
+      wrap.style.left            = '';
+      wrap.style.position        = '';
     } else {
-      // Portrait: top-center origin — stays centred, compensate width overflow with negative margin
+      // Always scale from top-center so content stays horizontally centred
+      var scaledW = (100 / currentZoom).toFixed(4);
+      var marginL = (-((1 / currentZoom - 1) / 2 * 100)).toFixed(4);
       wrap.style.transformOrigin = 'top center';
       wrap.style.transform       = 'scale(' + currentZoom + ')';
-      wrap.style.width           = (100 / currentZoom).toFixed(4) + '%';
-      // Do NOT expand height in portrait — the body is overflow:hidden so it clips correctly
-      wrap.style.height          = '';
-      wrap.style.marginLeft      = (-((1 / currentZoom - 1) / 2 * 100)).toFixed(4) + '%';
+      wrap.style.width           = scaledW + '%';
+      wrap.style.height          = (100 / currentZoom).toFixed(4) + 'vh';
+      wrap.style.marginLeft      = marginL + '%';
     }
 
     if (label) label.textContent = Math.round(currentZoom * 100) + '%';
@@ -1633,16 +1646,15 @@ window.addEventListener('resize', function(){
     setTimeout(resizeCanvas, 60);
   }
 
-  function showZoomControls(visible) {
+  // Always show zoom controls (both portrait and landscape)
+  function showZoomControls() {
     var el = document.getElementById('zoomControls');
     if (!el) return;
-    if (visible) el.classList.add('visible');
-    else         el.classList.remove('visible');
+    el.classList.add('visible');
   }
 
-  // Re-apply zoom on orientation change so portrait/landscape branch switches correctly
   function updateZoomVisibility() {
-    showZoomControls(isLandscapeQuery());
+    showZoomControls();
     applyZoom(currentZoom);
   }
 
@@ -1650,8 +1662,8 @@ window.addEventListener('resize', function(){
   window.addEventListener('orientationchange', function(){ setTimeout(updateZoomVisibility, 250); });
 
   document.addEventListener('DOMContentLoaded', function() {
+    showZoomControls();
     applyZoom(currentZoom);
-    updateZoomVisibility();
 
     wireBtn('zoomInBtn',  function(){ applyZoom(currentZoom + ZOOM_STEP); });
     wireBtn('zoomOutBtn', function(){ applyZoom(currentZoom - ZOOM_STEP); });
@@ -1660,8 +1672,8 @@ window.addEventListener('resize', function(){
   // Also run immediately (DOMContentLoaded may have already fired)
   if (document.readyState !== 'loading') {
     setTimeout(function(){
+      showZoomControls();
       applyZoom(currentZoom);
-      updateZoomVisibility();
       var inBtn  = document.getElementById('zoomInBtn');
       var outBtn = document.getElementById('zoomOutBtn');
       if (inBtn)  inBtn.addEventListener('pointerdown', function(e){ e.preventDefault(); applyZoom(currentZoom + ZOOM_STEP); });
