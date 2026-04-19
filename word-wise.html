@@ -11,17 +11,68 @@
       content="default-src 'self' file:; script-src 'self' file: 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' file: data:; media-src 'self' file: data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
     />
     <title>Word Wise</title>
+    <script>
+      (function () {
+        var t = localStorage.getItem("ctg-theme") || "light";
+        document.documentElement.setAttribute("data-theme", t);
+      })();
+    </script>
     <style>
       :root {
-        --color-bg: #f8f6f3;
-        --color-surface: #ffffff;
-        --color-text: #2d3436;
-        --color-text-light: #636e72;
+        --bg: #f8f6f3;
+        --surface: #ffffff;
+        --surface2: #f0ede8;
+        --text: #2d3436;
+        --text-light: #636e72;
+        --border: #e0dbd5;
+        --accent: #e17055;
+        --accent-soft: rgba(225, 112, 85, 0.12);
+        --success: #00b894;
+        --error: #e17055;
+        --highlight: #74b9ff;
+        --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.07);
+        --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+        --color-bg: var(--bg);
+        --color-surface: var(--surface);
+        --color-text: var(--text);
+        --color-text-light: var(--text-light);
         --color-language: #fdcb6e;
-        --color-success: #00b894;
-        --color-error: #e17055;
-        --color-highlight: #74b9ff;
-        --color-game-bg: #dfe6e9;
+        --color-success: var(--success);
+        --color-error: var(--error);
+        --color-highlight: var(--highlight);
+        --color-game-bg: var(--surface2);
+
+        --left-border: #c0392b;
+        --left-bg: linear-gradient(135deg, #e55039, #c0392b);
+        --left-text: rgba(255, 255, 255, 0.86);
+        --right-border: #1a6fc4;
+        --right-bg: linear-gradient(135deg, #2e86de, #1a6fc4);
+        --right-text: rgba(255, 255, 255, 0.86);
+      }
+
+      [data-theme="dark"] {
+        --bg: #141414;
+        --surface: #1f1f1f;
+        --surface2: #2a2a2a;
+        --text: #f0ede8;
+        --text-light: #9a9590;
+        --border: #333333;
+        --accent: #ff7a5a;
+        --accent-soft: rgba(255, 122, 90, 0.15);
+        --success: #00d4a8;
+        --error: #ff7a5a;
+        --highlight: #90c8ff;
+        --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+
+        --color-language: #ffd070;
+        --left-border: #d14f3a;
+        --left-bg: linear-gradient(135deg, #d14f3a, #a53a2f);
+        --left-text: rgba(255, 255, 255, 0.9);
+        --right-border: #2b7ecf;
+        --right-bg: linear-gradient(135deg, #2b7ecf, #1f5f9d);
+        --right-text: rgba(255, 255, 255, 0.9);
       }
 
       * {
@@ -33,7 +84,7 @@
         min-height: 100vh;
         font-family:
           -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        background: linear-gradient(180deg, #f8f6f3 0%, #f0ece8 100%);
+        background: var(--color-bg);
         color: var(--color-text);
         font-size: 20px;
         line-height: 1.5;
@@ -53,7 +104,8 @@
       .panel {
         background: var(--color-surface);
         border-radius: 14px;
-        box-shadow: 0 6px 20px rgba(45, 52, 54, 0.08);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
         padding: 18px;
       }
 
@@ -103,7 +155,7 @@
         margin-top: 14px;
         border-radius: 14px;
         background: var(--color-game-bg);
-        border: 2px solid #cfd7da;
+        border: 2px solid var(--border);
         padding: 16px;
         min-height: 360px;
         display: flex;
@@ -132,9 +184,13 @@
         margin: 0 auto;
         padding: 6px 14px;
         border-radius: 999px;
-        border: 2px solid #8bbce6;
-        background: #e8f5ff;
-        color: #0b5f9a;
+        border: 2px solid var(--highlight);
+        background: color-mix(
+          in srgb,
+          var(--highlight) 18%,
+          var(--color-surface)
+        );
+        color: var(--highlight);
         font-size: 20px;
         font-weight: 600;
         line-height: 1.2;
@@ -142,14 +198,14 @@
 
       .mode-badge.category {
         border-color: #d3a845;
-        background: #fff6dd;
-        color: #8a6200;
+        background: color-mix(in srgb, #d3a845 18%, var(--color-surface));
+        color: var(--color-language);
       }
 
       .mode-badge.completion {
         border-color: #c18e3a;
-        background: #fff3de;
-        color: #8c5900;
+        background: color-mix(in srgb, #c18e3a 18%, var(--color-surface));
+        color: var(--color-language);
       }
 
       .prompt {
@@ -175,7 +231,7 @@
       }
 
       .prompt.answer .blank {
-        color: #d57641;
+        color: var(--accent);
         text-decoration: underline;
         text-decoration-thickness: 4px;
         text-underline-offset: 6px;
@@ -189,7 +245,7 @@
 
       .option {
         border-radius: 14px;
-        border: 4px solid #bcc7cc;
+        border: 4px solid var(--border);
         min-height: 170px;
         display: flex;
         flex-direction: column;
@@ -197,8 +253,12 @@
         justify-content: center;
         text-align: center;
         padding: 12px;
-        background: #f5f8f9;
-        color: #435056;
+        background: color-mix(
+          in srgb,
+          var(--color-surface) 75%,
+          var(--color-game-bg)
+        );
+        color: var(--color-text-light);
         word-break: break-word;
         overflow-wrap: break-word;
         cursor: pointer;
@@ -210,17 +270,17 @@
       }
 
       .option.left {
-        border-color: #bf4f15;
+        border-color: var(--left-border);
         border-style: solid;
-        background: linear-gradient(180deg, #ffe6d6 0%, #ffd0b4 100%);
-        color: #5e2609;
+        background: var(--left-bg);
+        color: var(--left-text);
       }
 
       .option.right {
-        border-color: #0b409b;
+        border-color: var(--right-border);
         border-style: solid;
-        background: linear-gradient(180deg, #e0eeff 0%, #bcd9ff 100%);
-        color: #082457;
+        background: var(--right-bg);
+        color: var(--right-text);
       }
 
       .option:active {
@@ -272,15 +332,15 @@
         display: flex;
         justify-content: space-between;
         font-weight: 600;
-        color: #3d4a50;
+        color: var(--color-text-light);
       }
 
       .direction-left {
-        color: #7b310e;
+        color: var(--accent);
       }
 
       .direction-right {
-        color: #0a377f;
+        color: var(--highlight);
       }
 
       .feedback-row {
@@ -293,10 +353,14 @@
 
       .feedback-banner {
         min-height: 64px;
-        border: 2px solid #97ddd2;
+        border: 2px solid color-mix(in srgb, var(--success) 60%, var(--border));
         border-radius: 12px;
-        background: #d6f6ee;
-        color: #0d6b58;
+        background: color-mix(
+          in srgb,
+          var(--success) 16%,
+          var(--color-surface)
+        );
+        color: var(--color-success);
         display: none;
         align-items: center;
         justify-content: center;
@@ -311,9 +375,9 @@
       }
 
       .feedback-banner.error {
-        border-color: #efb5a4;
-        background: #ffe7df;
-        color: #8b3d28;
+        border-color: color-mix(in srgb, var(--error) 55%, var(--border));
+        background: color-mix(in srgb, var(--error) 16%, var(--color-surface));
+        color: var(--color-error);
       }
 
       .streak-dots {
@@ -327,23 +391,23 @@
         width: 18px;
         height: 18px;
         border-radius: 50%;
-        border: 2px solid #b9c4c9;
-        background: #eef3f5;
+        border: 2px solid var(--border);
+        background: var(--color-surface);
       }
 
       .dot.correct {
         background: var(--color-success);
-        border-color: #0ea883;
+        border-color: var(--color-success);
       }
 
       .dot.wrong {
         background: var(--color-error);
-        border-color: #cf5f44;
+        border-color: var(--color-error);
       }
 
       .dot.empty {
-        background: #eef3f5;
-        border-color: #c5ced3;
+        background: var(--color-surface);
+        border-color: var(--border);
       }
 
       .controls {
@@ -354,9 +418,9 @@
       }
 
       .btn {
-        border: 2px solid #c6cdd1;
+        border: 2px solid var(--border);
         border-radius: 10px;
-        background: #fff;
+        background: var(--color-surface);
         color: var(--color-text);
         min-height: 80px;
         min-width: 140px;
@@ -368,7 +432,7 @@
 
       .btn.primary {
         border-color: #d3a845;
-        background: #fff8e5;
+        background: color-mix(in srgb, #d3a845 18%, var(--color-surface));
       }
 
       .btn:focus-visible,
@@ -388,18 +452,18 @@
         width: 100%;
         height: 24px;
         border-radius: 999px;
-        background: #d3dade;
+        background: color-mix(in srgb, var(--border) 65%, var(--color-game-bg));
         overflow: hidden;
       }
 
       .timer-wrap.calm {
-        background: #d7dee2;
+        background: color-mix(in srgb, var(--border) 48%, var(--color-game-bg));
       }
 
       .timer-bar {
         height: 100%;
         width: 100%;
-        background: linear-gradient(90deg, #f4d06f, #f0a24e);
+        background: linear-gradient(90deg, #f4d06f, var(--accent));
         transition: width 200ms linear;
       }
 
@@ -412,7 +476,7 @@
         height: 76px;
         border-radius: 50%;
         border: 3px solid #e0b94f;
-        background: #fff4d6;
+        background: color-mix(in srgb, #e0b94f 18%, var(--color-surface));
         color: #d0a329;
         display: flex;
         align-items: center;
@@ -439,9 +503,9 @@
       }
 
       .result-card {
-        border: 2px solid #d4dce0;
+        border: 2px solid var(--border);
         border-radius: 12px;
-        background: #f8fafb;
+        background: var(--color-game-bg);
         text-align: center;
         padding: 10px;
       }
@@ -516,8 +580,12 @@
       .btn-start-game {
         border: 4px solid #d3a845;
         border-radius: 20px;
-        background: linear-gradient(180deg, #fff8e5 0%, #fffbf0 100%);
-        color: #8a6200;
+        background: linear-gradient(
+          180deg,
+          color-mix(in srgb, #d3a845 18%, var(--color-surface)) 0%,
+          var(--color-surface) 100%
+        );
+        color: var(--color-language);
         min-height: 120px;
         min-width: 240px;
         width: 90%;
@@ -529,7 +597,7 @@
         user-select: none;
         -webkit-tap-highlight-color: transparent;
         transition: all 220ms ease-out;
-        box-shadow: 0 4px 12px rgba(211, 168, 69, 0.3);
+        box-shadow: var(--shadow-sm);
       }
 
       .btn-start-game:active {
@@ -826,7 +894,10 @@
               </p>
               <p class="instruction-step">
                 <strong>4.</strong>
-                <span>Take your time. The game starts after you tap Start Game.</span>
+                <span
+                  >Take your time. The game starts after you tap Start
+                  Game.</span
+                >
               </p>
             </div>
             <button id="startGameBtn" class="btn-start-game" type="button">
@@ -2497,5 +2568,6 @@
         init();
       })();
     </script>
+    <script src="shared.js" onerror="void 0"></script>
   </body>
 </html>

@@ -11,17 +11,68 @@
       content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
     />
     <title>Simon's Path</title>
+    <script>
+      (function () {
+        var t = localStorage.getItem("ctg-theme") || "light";
+        document.documentElement.setAttribute("data-theme", t);
+      })();
+    </script>
     <style>
       :root {
-        --color-bg: #f7f5f0;
-        --color-surface: #ffffff;
-        --color-text: #1f272b;
-        --color-text-light: #2f3c42;
-        --color-memory: #4d3dbb;
-        --color-success: #076d56;
-        --color-error: #8f2f17;
-        --color-highlight: #0b5fff;
-        --color-game-bg: #e6ecef;
+        --bg: #f8f6f3;
+        --surface: #ffffff;
+        --surface2: #f0ede8;
+        --text: #2d3436;
+        --text-light: #636e72;
+        --border: #e0dbd5;
+        --accent: #e17055;
+        --accent-soft: rgba(225, 112, 85, 0.12);
+        --success: #00b894;
+        --error: #e17055;
+        --highlight: #74b9ff;
+        --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.07);
+        --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+        --color-bg: var(--bg);
+        --color-surface: var(--surface);
+        --color-text: var(--text);
+        --color-text-light: var(--text-light);
+        --color-memory: #6c5ce7;
+        --color-success: var(--success);
+        --color-error: var(--error);
+        --color-highlight: var(--highlight);
+        --color-game-bg: var(--surface2);
+
+        --left-border: #c0392b;
+        --left-bg: linear-gradient(135deg, #e55039, #c0392b);
+        --left-text: rgba(255, 255, 255, 0.86);
+        --right-border: #1a6fc4;
+        --right-bg: linear-gradient(135deg, #2e86de, #1a6fc4);
+        --right-text: rgba(255, 255, 255, 0.86);
+      }
+
+      [data-theme="dark"] {
+        --bg: #141414;
+        --surface: #1f1f1f;
+        --surface2: #2a2a2a;
+        --text: #f0ede8;
+        --text-light: #9a9590;
+        --border: #333333;
+        --accent: #ff7a5a;
+        --accent-soft: rgba(255, 122, 90, 0.15);
+        --success: #00d4a8;
+        --error: #ff7a5a;
+        --highlight: #90c8ff;
+        --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+
+        --color-memory: #9b8dff;
+        --left-border: #d14f3a;
+        --left-bg: linear-gradient(135deg, #d14f3a, #a53a2f);
+        --left-text: rgba(255, 255, 255, 0.9);
+        --right-border: #2b7ecf;
+        --right-bg: linear-gradient(135deg, #2b7ecf, #1f5f9d);
+        --right-text: rgba(255, 255, 255, 0.9);
       }
 
       * {
@@ -33,7 +84,7 @@
         min-height: 100vh;
         font-family:
           -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        background: linear-gradient(180deg, #f8f6f3 0%, #f0ece8 100%);
+        background: var(--color-bg);
         color: var(--color-text);
         font-size: 20px;
         line-height: 1.5;
@@ -53,8 +104,8 @@
       .panel {
         background: var(--color-surface);
         border-radius: 14px;
-        box-shadow: 0 6px 20px rgba(45, 52, 54, 0.08);
-        border: 1px solid #d4dde1;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
         padding: 18px;
 
         .screen.prestart .game-top,
@@ -74,9 +125,13 @@
           width: 100%;
           max-width: 460px;
           border-radius: 18px;
-          border: 2px solid #d7dce0;
-          background: linear-gradient(180deg, #ffffff 0%, #f6f8fa 100%);
-          box-shadow: 0 10px 24px rgba(45, 52, 54, 0.08);
+          border: 2px solid var(--border);
+          background: linear-gradient(
+            180deg,
+            var(--color-surface) 0%,
+            var(--color-game-bg) 100%
+          );
+          box-shadow: var(--shadow-sm);
           padding: 16px;
           display: grid;
           gap: 10px;
@@ -141,8 +196,8 @@
 
       .game-meta {
         text-align: center;
-        background: #ffffff;
-        border: 2px solid #d0d9de;
+        background: var(--color-surface);
+        border: 2px solid var(--border);
         border-radius: 10px;
         padding: 8px;
       }
@@ -151,7 +206,7 @@
         margin-top: 14px;
         border-radius: 14px;
         background: var(--color-game-bg);
-        border: 2px solid #cfd7da;
+        border: 2px solid var(--border);
         padding: 16px;
         min-height: 360px;
         display: flex;
@@ -191,10 +246,14 @@
         width: 100%;
         max-width: 420px;
         min-height: 110px;
-        border: 3px solid #3f33a8;
+        border: 3px solid var(--color-memory);
         border-radius: 16px;
-        background: #ece8ff;
-        color: #1f272b;
+        background: color-mix(
+          in srgb,
+          var(--color-memory) 14%,
+          var(--color-surface)
+        );
+        color: var(--color-text);
         font-size: 34px;
         font-weight: 800;
         letter-spacing: 0.8px;
@@ -223,7 +282,7 @@
 
       .pad {
         border-radius: 14px;
-        border: 4px solid #8f9ea6;
+        border: 4px solid var(--border);
         min-height: 170px;
         display: flex;
         flex-direction: column;
@@ -232,8 +291,12 @@
         justify-content: center;
         font-size: 20px;
         font-weight: 700;
-        background: #f5f8f9;
-        color: #1f272b;
+        background: color-mix(
+          in srgb,
+          var(--color-surface) 75%,
+          var(--color-game-bg)
+        );
+        color: var(--color-text);
         transition:
           background-color 240ms ease-out,
           transform 240ms ease-out,
@@ -278,15 +341,15 @@
         display: flex;
         justify-content: space-between;
         font-weight: 600;
-        color: #3d4a50;
+        color: var(--color-text-light);
       }
 
       .direction-left {
-        color: #7b310e;
+        color: var(--accent);
       }
 
       .direction-right {
-        color: #0a377f;
+        color: var(--highlight);
       }
 
       .feedback-row {
@@ -298,17 +361,17 @@
       }
 
       .pad-left {
-        border-color: #bf4f15;
+        border-color: var(--left-border);
         border-style: solid;
-        background: linear-gradient(180deg, #ffe6d6 0%, #ffd0b4 100%);
-        color: #5e2609;
+        background: var(--left-bg);
+        color: var(--left-text);
       }
 
       .pad-right {
-        border-color: #0b409b;
+        border-color: var(--right-border);
         border-style: solid;
-        background: linear-gradient(180deg, #e0eeff 0%, #bcd9ff 100%);
-        color: #082457;
+        background: var(--right-bg);
+        color: var(--right-text);
       }
 
       .pad-arrow {
@@ -338,8 +401,8 @@
         position: absolute;
         inset: 0;
         border-radius: 14px;
-        background: rgba(45, 52, 54, 0.74);
-        color: #ffffff;
+        background: rgba(0, 0, 0, 0.62);
+        color: var(--color-surface);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -387,9 +450,9 @@
       }
 
       .btn {
-        border: 2px solid #7d8d96;
+        border: 2px solid var(--border);
         border-radius: 10px;
-        background: #fff;
+        background: var(--color-surface);
         color: var(--color-text);
         min-height: 80px;
         min-width: 180px;
@@ -401,8 +464,12 @@
       }
 
       .btn.primary {
-        border-color: #4d3dbb;
-        background: #ece8ff;
+        border-color: var(--color-memory);
+        background: color-mix(
+          in srgb,
+          var(--color-memory) 14%,
+          var(--color-surface)
+        );
       }
 
       .btn:focus-visible,
@@ -421,9 +488,13 @@
         width: 76px;
         height: 76px;
         border-radius: 50%;
-        border: 3px solid #5d50c9;
-        background: #ece8ff;
-        color: #3b2e9f;
+        border: 3px solid var(--color-memory);
+        background: color-mix(
+          in srgb,
+          var(--color-memory) 14%,
+          var(--color-surface)
+        );
+        color: var(--color-memory);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -449,9 +520,9 @@
       }
 
       .result-card {
-        border: 2px solid #d4dce0;
+        border: 2px solid var(--border);
         border-radius: 12px;
-        background: #f8fafb;
+        background: var(--color-game-bg);
         text-align: center;
         padding: 10px;
       }
@@ -711,30 +782,38 @@
           </p>
 
           <div class="start-gate">
-              <div class="instructions-card" aria-label="Simon Path instructions">
-                <p class="instructions-title">How to play</p>
-                <div class="instructions-copy">
-                  <p class="instruction-step">
-                    <strong>1.</strong>
-                    <span>Watch the left and right pads light up in order.</span>
-                  </p>
-                  <p class="instruction-step">
-                    <strong>2.</strong>
-                    <span>When the sequence stops, repeat it with Arrow Left and Arrow Right.</span>
-                  </p>
-                  <p class="instruction-step">
-                    <strong>3.</strong>
-                    <span>Press once for each step, then wait for the next light.</span>
-                  </p>
-                  <p class="instruction-step">
-                    <strong>4.</strong>
-                    <span>The sequence grows slowly. Start when you are ready.</span>
-                  </p>
-                </div>
-                <button id="startGameBtn" class="start-game-btn" type="button">
-                  START GAME
-                </button>
+            <div class="instructions-card" aria-label="Simon Path instructions">
+              <p class="instructions-title">How to play</p>
+              <div class="instructions-copy">
+                <p class="instruction-step">
+                  <strong>1.</strong>
+                  <span>Watch the left and right pads light up in order.</span>
+                </p>
+                <p class="instruction-step">
+                  <strong>2.</strong>
+                  <span
+                    >When the sequence stops, repeat it with Arrow Left and
+                    Arrow Right.</span
+                  >
+                </p>
+                <p class="instruction-step">
+                  <strong>3.</strong>
+                  <span
+                    >Press once for each step, then wait for the next
+                    light.</span
+                  >
+                </p>
+                <p class="instruction-step">
+                  <strong>4.</strong>
+                  <span
+                    >The sequence grows slowly. Start when you are ready.</span
+                  >
+                </p>
               </div>
+              <button id="startGameBtn" class="start-game-btn" type="button">
+                START GAME
+              </button>
+            </div>
           </div>
 
           <div class="pads">
@@ -1489,5 +1568,6 @@
         init();
       })();
     </script>
+    <script src="shared.js" onerror="void 0"></script>
   </body>
 </html>
