@@ -1,0 +1,588 @@
+/* ===================================== */
+/* GLOBAL */
+/* ===================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    background:#efefef;
+
+    width:100vw;
+    height:100vh;
+
+    overflow:hidden;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:10px;
+}
+/* ===================================== */
+/* MAIN CONTAINER */
+/* ===================================== */
+
+.container{
+
+    width:min(95vw,1400px);
+
+    height:auto;
+
+    display:flex;
+    flex-direction:column;
+
+    gap:20px;
+}
+
+/* ===================================== */
+/* TOP BAR */
+/* ===================================== */
+
+.top-bar{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:18px 24px;
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(5,1fr);
+
+    align-items:center;
+
+    text-align:center;
+
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+
+    font-size:clamp(16px,1.2vw,28px);
+
+    font-weight:bold;
+}
+
+#timerDisplay{
+
+    background:#fdf2f0;
+
+    color:#df7658;
+
+    padding:8px 14px;
+
+    border-radius:10px;
+
+    justify-self:center;
+}
+
+/* ===================================== */
+/* GAME BOX */
+/* ===================================== */
+
+.game-box{
+
+    background:white;
+
+    border-radius:28px;
+
+    padding:20px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,0.08);
+
+    display:flex;
+    flex-direction:column;
+
+    justify-content:center;
+    align-items:center;
+
+    overflow:hidden;
+
+    min-height:420px;
+}
+/* ===================================== */
+/* TITLE */
+/* ===================================== */
+
+#instruction{
+
+    font-size:clamp(28px,3vw,52px);
+
+    text-align:center;
+
+    margin-bottom:28px;
+
+    line-height:1.2;
+}
+
+/* ===================================== */
+/* PANELS */
+/* ===================================== */
+
+.panels{
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:30px;
+}
+
+/* ===================================== */
+/* PANEL */
+/* ===================================== */
+
+.panel{
+
+    width:min(28vw,360px);
+
+    aspect-ratio:1/1;
+
+    border:4px solid #d5d5d5;
+
+    border-radius:28px;
+
+    background:#fafafa;
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    justify-items:center;
+    align-items:center;
+
+    gap:12px;
+
+    padding:24px;
+}
+
+/* LEVEL 5+ */
+
+.panel.large{
+
+    grid-template-columns:
+    repeat(4,1fr);
+}
+
+/* ===================================== */
+/* SHAPES */
+/* ===================================== */
+
+.shape{
+
+    width:clamp(20px,2.5vw,55px);
+
+    height:clamp(20px,2.5vw,55px);
+
+    background:#2f84d6;
+
+    border-radius:50%;
+}
+
+/* LEVEL 1 */
+
+.square{
+    border-radius:0%;
+}
+
+/* LEVEL 2 */
+
+.red{
+    background:#df7658;
+}
+
+/* LEVEL 3 */
+
+.small{
+
+    width:clamp(12px,1.8vw,35px);
+
+    height:clamp(12px,1.8vw,35px);
+}
+
+/* LEVEL 4 */
+
+.rotate{
+    transform:rotate(45deg);
+}
+
+/* LEVEL 5 */
+
+.outline{
+
+    background:transparent;
+
+    border:4px solid #2f84d6;
+}
+
+/* LEVEL 6 */
+
+.shade{
+    background:#6da9df;
+}
+
+/* ===================================== */
+/* BUTTONS */
+/* ===================================== */
+
+.buttons{
+
+    display:flex;
+
+    gap:20px;
+
+    width:100%;
+}
+
+/* ===================================== */
+/* BUTTON STYLE */
+/* ===================================== */
+
+button{
+
+    flex:1;
+
+    padding:22px;
+
+    border:none;
+
+    border-radius:20px;
+
+    font-size:clamp(20px,2vw,38px);
+
+    font-weight:bold;
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:0.2s;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    text-align:center;
+}
+
+button:active{
+    transform:scale(0.98);
+}
+
+#leftBtn{
+    background:#df7658;
+}
+
+#rightBtn{
+    background:#2f84d6;
+}
+
+/* ===================================== */
+/* COUNTDOWN */
+/* ===================================== */
+
+.countdown-popup{
+
+    position:fixed;
+
+    top:50%;
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:180px;
+    height:180px;
+
+    background:white;
+
+    border-radius:30px;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    font-size:70px;
+
+    font-weight:bold;
+
+    box-shadow:0 10px 40px rgba(0,0,0,0.2);
+
+    z-index:9999;
+}
+
+/* =================================================== */
+/* MOBILE RESPONSIVE  */
+/* =================================================== */
+
+@media (max-width: 768px) {
+
+    body{
+        padding:10px;
+        align-items:flex-start;
+    }
+
+    .container{
+        width:100%;
+        gap:16px;
+    }
+
+    /* TOP BAR */
+
+    .top-bar{
+
+        grid-template-columns:repeat(2,1fr);
+
+        gap:12px;
+
+        padding:16px;
+
+        font-size:16px;
+    }
+
+    #timerDisplay{
+        display:none;
+    }
+
+    /* GAME BOX */
+
+    .game-box{
+
+        min-height:unset;
+
+        padding:22px 12px 100px 12px;
+
+        border-radius:24px;
+    }
+
+    #instruction{
+
+        font-size:24px;
+
+        margin-bottom:20px;
+    }
+
+    /* PANELS */
+
+    .panels{
+
+        gap:12px;
+    }
+
+    .panel{
+
+        width:44vw;
+        height:44vw;
+
+        max-width:220px;
+        max-height:220px;
+
+        min-width:140px;
+        min-height:140px;
+
+        padding:10px;
+
+        gap:8px;
+
+        border-width:3px;
+
+        border-radius:16px;
+    }
+
+    .panel.large{
+
+        gap:5px;
+
+        padding:8px;
+    }
+
+    /* SHAPES */
+
+    .shape{
+
+        width:22px;
+        height:22px;
+    }
+
+    .small{
+
+        width:14px;
+        height:14px;
+    }
+
+    .outline{
+        border-width:3px;
+    }
+
+    /* BUTTONS */
+
+    .buttons{
+
+        position:fixed;
+
+        bottom:10px;
+        left:10px;
+        right:10px;
+
+        display:flex;
+
+        gap:10px;
+
+        z-index:999;
+    }
+
+    button{
+
+        padding:18px 10px;
+
+        font-size:24px;
+
+        border-radius:16px;
+    }
+
+    /* COUNTDOWN */
+
+    .countdown-popup{
+
+        width:150px;
+        height:150px;
+
+        font-size:60px;
+
+        border-radius:24px;
+    }
+}
+/* ===================================== */
+/* INTRO SCREEN */
+/* ===================================== */
+
+.intro-screen{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:#efefef;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:99999;
+}
+
+.intro-card{
+
+    width:min(90%,650px);
+
+    background:white;
+
+    padding:40px;
+
+    border-radius:30px;
+
+    text-align:center;
+
+    box-shadow:0 6px 25px rgba(0,0,0,0.1);
+}
+
+.intro-card h1{
+
+    font-size:clamp(28px,3vw,50px);
+
+    margin-bottom:20px;
+}
+
+.intro-text{
+
+    font-size:20px;
+
+    margin-bottom:30px;
+
+    color:#555;
+}
+
+.how-to-play{
+
+    text-align:left;
+
+    margin-bottom:30px;
+}
+
+.how-to-play h3{
+
+    margin-bottom:15px;
+
+    font-size:24px;
+}
+
+.how-to-play p{
+
+    margin-bottom:10px;
+
+    font-size:18px;
+
+    line-height:1.5;
+}
+
+#startGameBtn{
+
+    width:100%;
+
+    padding:20px;
+
+    background:#2f84d6;
+
+    color:white;
+
+    border:none;
+
+    border-radius:18px;
+
+    font-size:28px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .intro-card{
+
+        padding:25px;
+    }
+
+    .intro-text{
+
+        font-size:16px;
+    }
+
+    .how-to-play p{
+
+        font-size:16px;
+    }
+
+    #startGameBtn{
+
+        font-size:22px;
+    }
+}
