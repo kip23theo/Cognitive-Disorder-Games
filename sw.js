@@ -1,4 +1,4 @@
-const CACHE_NAME = "cognitive-games-v2";
+const CACHE_NAME = "cognitive-games-v3";
 
 const FILES_TO_CACHE = [
   "./",
@@ -16,6 +16,12 @@ const FILES_TO_CACHE = [
   "./simons-path.html",
   "./sorterGame.html",
   "./word-wise.html",
+  "./number-juggler.html",
+  "./number-juggler-script.js",
+  "./number-juggler-style.css",
+  "./spot-the-odd.html",
+  "./spot-the-odd-script.js",
+  "./spot-the-odd-style.css",
 ];
 // INSTALL
 self.addEventListener("install", (event) => {
