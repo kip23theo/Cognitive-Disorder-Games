@@ -591,14 +591,93 @@ window.addEventListener("load", () => {
           font-size: 24px;
         }
       }
+      /* ADMIN DASHBOARD */
+
+#adminDashboard{
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  width: 340px;
+  max-height: 80vh;
+  overflow-y: auto;
+  z-index: 99999;
+}
+
+.admin-card{
+  background: white;
+  padding: 18px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  border:1px solid #ddd;
+}
+
+.admin-card h2{
+  margin-bottom:16px;
+}
+
+.admin-card input{
+  width:100%;
+  padding:12px;
+  margin-bottom:10px;
+  border:1px solid #ccc;
+  border-radius:10px;
+}
+
+.admin-card button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#e17055;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  margin-bottom:14px;
+}
+
+.dashboard-user{
+  background:#f8f8f8;
+  padding:12px;
+  border-radius:12px;
+  margin-top:10px;
+  border:1px solid #ddd;
+}
+
+.dashboard-user button{
+  margin-top:10px;
+  background:#d63031;
+}
     </style>
   </head>
   <body>
-    <div id="participantBadge"></div>
-    <div id="adminParticipantsPanel" style="display:none;">
-  <h2>Institution Participants</h2>
+  <div id="participantBadge"></div>
 
-  <div id="adminParticipantsList"></div>
+<div id="adminDashboard" style="display:none;">
+
+  <div class="admin-card">
+
+    <h2>Institution Participants</h2>
+
+    <input
+      type="text"
+      id="newParticipantName"
+      placeholder="Participant Name"
+    >
+
+    <input
+      type="number"
+      id="newParticipantAge"
+      placeholder="Age"
+    >
+
+    <button onclick="adminAddParticipant()">
+      Add Participant
+    </button>
+
+    <div id="dashboardParticipants"></div>
+
+  </div>
+
 </div>
     <!-- PWA INSTALL BANNER -->
   <div id="install-banner">
@@ -638,26 +717,40 @@ window.addEventListener("load", () => {
           Brain-training mini-games designed to sharpen focus, reaction speed,
           and spatial awareness — right in your browser.
         </p>
-        <div class="hero-cta">
-          <a
-            onclick="
-              loadGame('light-catcher');
-              return false;
-            "
-            href="#"
-            class="btn-hero btn-hero-primary"
-            >▶ Play Now</a
-          >
-          <a
-            onclick="
-              openSettings();
-              return false;
-            "
-            href="#"
-            class="btn-hero btn-hero-secondary"
-            >⚙️ Settings</a
-          >
-        </div>
+       <div class="hero-cta">
+
+  <button
+    id="adminDashboardBtn"
+    onclick="openAdminDashboard()"
+    class="btn-hero btn-hero-secondary"
+    style="display:none;"
+  >
+    🛠 Admin Dashboard
+  </button>
+
+  <a
+    onclick="
+      loadGame('light-catcher');
+      return false;
+    "
+    href="#"
+    class="btn-hero btn-hero-primary"
+  >
+    ▶ Play Now
+  </a>
+
+  <a
+    onclick="
+      openSettings();
+      return false;
+    "
+    href="#"
+    class="btn-hero btn-hero-secondary"
+  >
+    ⚙️ Settings
+  </a>
+
+</div>
       </section>
 
       <!-- STATS STRIP -->
@@ -1027,7 +1120,7 @@ window.addEventListener("load", () => {
     console.log("PWA install available");
 
     installBanner.classList.add("visible");
-  });
+  });  
 
   // Install button click
   installBtn.addEventListener("click", async () => {
@@ -1099,27 +1192,52 @@ window.addEventListener("load", () => {
 
 });
 </script>
-    <script>
-window.addEventListener("load", () => {
+  <script>
+
+function openAdminDashboard(){
+
+  const dashboard =
+    document.getElementById(
+      "adminDashboard"
+    );
+
+  if(dashboard.style.display === "none"){
+
+    dashboard.style.display = "block";
+
+    renderDashboardParticipants();
+
+  }else{
+
+    dashboard.style.display = "none";
+  }
+}
+
+/* SHOW BUTTON ONLY FOR ADMIN */
+
+window.addEventListener("load",()=>{
 
   const role =
     localStorage.getItem("ctg_role");
 
-  if(role !== "admin"){
-    return;
+  if(role === "admin"){
+
+    document.getElementById(
+      "adminDashboardBtn"
+    ).style.display = "inline-block";
   }
+});
 
-  const panel =
+/* RENDER PARTICIPANTS */
+
+function renderDashboardParticipants(){
+
+  const container =
     document.getElementById(
-      "adminParticipantsPanel"
+      "dashboardParticipants"
     );
 
-  const list =
-    document.getElementById(
-      "adminParticipantsList"
-    );
-
-  const adminInstitution =
+  const institution =
     localStorage.getItem(
       "ctg_institution"
     );
@@ -1133,15 +1251,13 @@ window.addEventListener("load", () => {
 
   participants =
     participants.filter(
-      p => p.institution === adminInstitution
+      p => p.institution === institution
     );
-
-  panel.style.display = "block";
 
   if(participants.length === 0){
 
-    list.innerHTML =
-      "<p>No participants registered yet.</p>";
+    container.innerHTML =
+      "<p>No participants yet.</p>";
 
     return;
   }
@@ -1151,28 +1267,127 @@ window.addEventListener("load", () => {
   participants.forEach((p,index)=>{
 
     html += `
-      <div style="
-        background:white;
-        padding:14px;
-        margin-top:12px;
-        border-radius:12px;
-        border:1px solid #ddd;
-        box-shadow:0 2px 8px rgba(0,0,0,0.05);
-      ">
+      <div class="dashboard-user">
 
         <b>👤 ${p.name}</b><br><br>
 
         Age : ${p.age}<br>
-
         Institution : ${p.institution}
+
+        <button onclick="deleteDashboardParticipant(${index})">
+          Delete
+        </button>
 
       </div>
     `;
   });
 
-  list.innerHTML = html;
+  container.innerHTML = html;
+}
 
-});
+/* ADD PARTICIPANT */
+
+function adminAddParticipant(){
+
+  const name =
+    document.getElementById(
+      "newParticipantName"
+    ).value.trim();
+
+  const age =
+    document.getElementById(
+      "newParticipantAge"
+    ).value.trim();
+
+  const institution =
+    localStorage.getItem(
+      "ctg_institution"
+    );
+
+  if(!name || !age){
+
+    alert("Fill all fields");
+    return;
+  }
+
+  let participants =
+    JSON.parse(
+      localStorage.getItem(
+        "ctg_participants"
+      )
+    ) || [];
+
+  participants.push({
+    name,
+    age,
+    institution
+  });
+
+  localStorage.setItem(
+    "ctg_participants",
+    JSON.stringify(participants)
+  );
+
+  document.getElementById(
+    "newParticipantName"
+  ).value = "";
+
+  document.getElementById(
+    "newParticipantAge"
+  ).value = "";
+
+  renderDashboardParticipants();
+}
+
+/* DELETE */
+
+function deleteDashboardParticipant(index){
+
+  const confirmDelete =
+    confirm("Delete participant?");
+
+  if(!confirmDelete){
+    return;
+  }
+
+  const institution =
+    localStorage.getItem(
+      "ctg_institution"
+    );
+
+  let participants =
+    JSON.parse(
+      localStorage.getItem(
+        "ctg_participants"
+      )
+    ) || [];
+
+  const filtered =
+    participants.filter(
+      p => p.institution === institution
+    );
+
+  const participantToDelete =
+    filtered[index];
+
+  participants =
+    participants.filter(
+      p =>
+        !(
+          p.name === participantToDelete.name &&
+          p.age === participantToDelete.age &&
+          p.institution === participantToDelete.institution
+        )
+    );
+
+  localStorage.setItem(
+    "ctg_participants",
+    JSON.stringify(participants)
+  );
+
+  renderDashboardParticipants();
+}
+
 </script>
   </body>
 </html>
