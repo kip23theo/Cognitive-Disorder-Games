@@ -381,7 +381,7 @@ canvas {
 
   <div class="rule" id="rule"></div>
 
-  <canvas id="canvas"></canvas>
+  <canvas id="canvas" tabindex="0"></canvas>
 
   <div class="buttons">
     <button class="left" onclick="check('L')">LEFT</button>
@@ -496,6 +496,7 @@ function startGame() {
 
   Sound.init();
   restart();
+  canvas.focus();
 }
 
 function resizeCanvas() {
