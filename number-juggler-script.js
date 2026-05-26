@@ -304,10 +304,6 @@ function generateOddEven(range){
 }
 
 // ==========================
-// COMPARISON MODE
-// ==========================
-
-// ==========================
 // GAME MODE: COMPARISON
 // ==========================
 function generateComparison(range) {
@@ -444,7 +440,40 @@ document.getElementById("rightBtn")
     checkAnswer("RIGHT");
 
 });
+// ==========================
+// BACK BUTTON
+// ==========================
 
+document.getElementById("backBtn")
+.addEventListener("click", function(){
+
+    let confirmExit = confirm("Exit the game?");
+
+    if(confirmExit){
+
+        window.location.href = "index.html";
+
+        // OR use this if you want browser back:
+        // history.back();
+    }
+});
+// ==========================
+// INTRO BACK BUTTON
+// ==========================
+
+document.getElementById("introBackBtn")
+.addEventListener("click", function(){
+
+    let confirmExit = confirm("Exit the game?");
+
+    if(confirmExit){
+
+        window.location.href = "index.html";
+
+        // OR:
+        // history.back();
+    }
+});
 // ==========================
 // KEYBOARD SUPPORT
 // ==========================
