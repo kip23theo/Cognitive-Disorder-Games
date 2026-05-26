@@ -17,7 +17,9 @@ A suite of interactive mini-games tailored for senior users:
 - **Match Or No Match** — Improves visual recognition and decision accuracy
 - **Balloon Float** — Builds sustained attention and control
 - **Rhythm Tap** — Develops motor coordination and timing
-
+- **Number Juggler**  — Strengthens numerical reasoning, focus and rapid decision making
+- **Spot the Odd**  — Improves visual scanning, concentration and pattern recognition
+  
 ---
 
 ## ♿ Accessibility & Senior-Centric Design
@@ -99,6 +101,8 @@ Cognitive-Games/
 ├── matchOrNoMatch.html     # Visual recognition game
 ├── balloon-float.html      # Sustained attention game
 ├── rhythmTap.html          # Motor timing game
+├── number-juggler.html     # Quantitative reasoning & math game
+├── spot-the-odd.html       # Visual discrimination & detail game
 │
 ├── settings.html           # Accessibility & user preferences
 ├── shared.js               # Shared logic utilities
@@ -164,6 +168,8 @@ Or run with VS Code Live Server.
 | Match Or No Match | Visual Recognition |
 | Balloon Float | Sustained Attention |
 | Rhythm Tap | Coordination & Timing |
+| Number Juggler | Numbers and Quantitative Reasoning|
+| Spot the Odd | Visual Discrimination & Attention to Detail |
 
 ---
 
@@ -203,6 +209,7 @@ Contributors:
 -Adharsh Jolly
 -Malavika
 -Asna
+-Devi Sushanth
 ---
 
 ## 📄 License
