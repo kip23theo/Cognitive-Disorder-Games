@@ -654,6 +654,17 @@ window.addEventListener("resize", () => {
 });
 
 resizeCanvas();
+document.addEventListener("keydown", function (e) {
+  if (gameOver) return;
+
+  if (e.key === "ArrowLeft") {
+    check("L");
+  }
+
+  if (e.key === "ArrowRight") {
+    check("R");
+  }
+});
 </script>
 
 </body>
