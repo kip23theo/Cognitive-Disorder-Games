@@ -655,15 +655,14 @@ window.addEventListener("resize", () => {
 });
 
 resizeCanvas();
-// ── Keyboard — attached to canvas, not window ─────────────────────────────────
-canvas.addEventListener("keydown", function(e) {
-  if (gameOver) return;
+document.addEventListener("keydown", function(e) {
+  if (document.getElementById("gameScreen").style.display !== "flex") return;
+  if (!current) return;
   if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
     e.preventDefault();
-    e.stopPropagation();
-    check(e.key === "ArrowLeft" ? "L" : "R");
+    if (!gameOver) check(e.key === "ArrowLeft" ? "L" : "R");
   }
-}, { passive: false });
+});
 </script>
 
 </body>
