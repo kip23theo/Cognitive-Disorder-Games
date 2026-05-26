@@ -656,19 +656,37 @@ window.addEventListener("load", () => {
 
   <div class="admin-card">
 
-    <h2>Institution Participants</h2>
+  <div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:16px;
+  ">
 
-    <input
-      type="text"
-      id="newParticipantName"
-      placeholder="Participant Name"
-    >
+    <h2 style="margin:0;">
+      Institution Participants
+    </h2>
 
-    <input
-      type="number"
-      id="newParticipantAge"
-      placeholder="Age"
+    <button
+      onclick="closeAdminDashboard()"
+      style="
+        width:auto;
+        padding:8px 14px;
+        margin:0;
+        background:#636e72;
+        border-radius:8px;
+      "
     >
+      ← Back
+    </button>
+
+  </div>
+
+  <input
+    type="text"
+    id="newParticipantName"
+    placeholder="Participant Name"
+  >
 
     <button onclick="adminAddParticipant()">
       Add Participant
@@ -1211,6 +1229,13 @@ function openAdminDashboard(){
 
     dashboard.style.display = "none";
   }
+}
+
+function closeAdminDashboard(){
+
+  document.getElementById(
+    "adminDashboard"
+  ).style.display = "none";
 }
 
 /* SHOW BUTTON ONLY FOR ADMIN */
