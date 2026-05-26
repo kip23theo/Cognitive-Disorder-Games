@@ -655,6 +655,12 @@ window.addEventListener("resize", () => {
 
 resizeCanvas();
 document.addEventListener("keydown", function (e) {
+  if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+    e.preventDefault(); // prevent page scroll
+  }
+
+  // Only respond if game screen is visible and game is active
+  if (document.getElementById("gameScreen").style.display === "none") return;
   if (gameOver) return;
 
   if (e.key === "ArrowLeft") {
