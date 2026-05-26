@@ -654,23 +654,15 @@ window.addEventListener("resize", () => {
 });
 
 resizeCanvas();
-document.addEventListener("keydown", function (e) {
-  if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-    e.preventDefault(); // prevent page scroll
-  }
-
-  // Only respond if game screen is visible and game is active
-  if (document.getElementById("gameScreen").style.display === "none") return;
+// ── Keyboard — attached to canvas, not window ─────────────────────────────────
+canvas.addEventListener("keydown", function(e) {
   if (gameOver) return;
-
-  if (e.key === "ArrowLeft") {
-    check("L");
+  if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+    e.preventDefault();
+    e.stopPropagation();
+    check(e.key === "ArrowLeft" ? "L" : "R");
   }
-
-  if (e.key === "ArrowRight") {
-    check("R");
-  }
-});
+}, { passive: false });
 </script>
 
 </body>
