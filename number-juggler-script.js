@@ -1,490 +1,593 @@
-// ==========================
-// GAME VARIABLES
-// ==========================
+/* =============================== */
+/* BODY */
+/* =============================== */
 
-let score = 0;
-let level = 1;
-let roundsInLevel = 0;
-let totalIncorrect = 0;
-let correctAnswer = "";
-let timer;
-let timeLeft;
-
-// ==========================
-// SOUNDS
-// ==========================
-
-const soundCorrect = new Audio("sounds/correct.mp3");
-const soundWrong = new Audio("sounds/wrong.mp3");
-const soundReveal = new Audio("sounds/reveal.mp3");
-const soundWarning = new Audio("sounds/warning.mp3");
-const soundLevelUp = new Audio("sounds/levelup.mp3");
-
-soundCorrect.volume = 0.5;
-soundWrong.volume = 0.5;
-soundReveal.volume = 0.3;
-soundWarning.volume = 0.3;
-soundLevelUp.volume = 0.5;
-
-// ==========================
-// PLAY SOUND
-// ==========================
-
-function playSound(sound){
-    sound.pause();
-    sound.currentTime = 0;
-
-    sound.play().catch(()=>{
-        console.log("Sound blocked");
-    });
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:#efefef;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:20px;
+    box-sizing:border-box;
 }
 
-// ==========================
-// START GAME BUTTON
-// ==========================
+/* =============================== */
+/* MAIN CONTAINER */
+/* =============================== */
 
-document.getElementById("startGameBtn")
-.addEventListener("click", function(){
-
-    document.getElementById("introScreen").style.display = "none";
-
-    startGame();
-});
-
-// ==========================
-// START GAME
-// ==========================
-
-function startGame(){
-
-    nextRound();
+.container {
+    width: min(700px, 92vw);
 }
 
-// ==========================
-// UPDATE LIVES
-// ==========================
-
-function updateLives(){
-
-    let remaining = 5 - totalIncorrect;
-
-    let hearts = "";
-
-    for(let i = 0; i < remaining; i++){
-        hearts += "❤️ ";
-    }
-
-    document.querySelector(".top-bar-lives").innerText = hearts;
-}
-// ==========================
-// NEXT ROUND
-// ==========================
-
-function nextRound(){
-
-    clearInterval(timer);
-
-    roundsInLevel++;
-
-    if(roundsInLevel > 15){
-
-        playSound(soundLevelUp);
-
-        alert("Level Complete!");
-
-        level++;
-        roundsInLevel = 1;
-    }
-
-    if(totalIncorrect >= 5){
-
-        alert("Game Over! Final Score: " + score);
-
-        location.reload();
-
-        return;
-    }
-
-    document.getElementById("level").innerText = level;
-
-    document.getElementById("score").innerText = score;
-
-    updateLives();
-
-    // ==========================
-    // TIMER SETTINGS
-    // ==========================
-
-    if(level >= 4){
-
-        document.getElementById("timerDisplay").style.display = "block";
-
-        if(level === 4){
-            startTimer(10);
-        }
-        else if(level === 5){
-            startTimer(8);
-        }
-        else{
-            startTimer(6);
-        }
-
-    } else {
-
-        document.getElementById("timerDisplay").style.display = "none";
-    }
-
-    // ==========================
-    // LEVEL SETTINGS
-    // ==========================
-
-    // LEVEL 1
-    // Odd / Even (1–20)
-
-    if(level === 1){
-
-        generateOddEven(20);
-    }
-
-    // LEVEL 2
-    // Comparison (1–50)
-
-    else if(level === 2){
-
-        generateComparison(50);
-    }
-
-    // LEVEL 3
-    // Arithmetic + Odd/Even
-
-    else if(level === 3){
-
-        if(Math.random() < 0.5){
-
-            generateArithmetic(20);
-
-        } else {
-
-            generateOddEven(50);
-        }
-    }
-
-    // LEVEL 4
-    // Medium difficulty
-
-    else if(level === 4){
-
-        let r = Math.random();
-
-        if(r < 0.33){
-
-            generateOddEven(100);
-
-        }
-        else if(r < 0.66){
-
-            generateComparison(200);
-
-        }
-        else{
-
-            generateArithmetic(50);
-        }
-    }
-
-    // LEVEL 5+
-    // HARD MODE with 3-digit numbers
-
-    else{
-
-        let r = Math.random();
-
-        if(r < 0.33){
-
-            // ODD / EVEN 1–999
-            generateOddEven(999);
-
-        }
-        else if(r < 0.66){
-
-            // 3-digit comparisons
-            generateComparison(999);
-
-        }
-        else{
-
-            // harder arithmetic
-            generateArithmetic(100);
-        }
-    }
-}
-// ==========================
-// TIMER
-// ==========================
-
-function startTimer(seconds){
-
-    timeLeft = seconds;
-
-    let timerElement = document.getElementById("timerDisplay");
-
-    timerElement.innerText = "Time: " + timeLeft;
-
-    timer = setInterval(function(){
-
-        timeLeft--;
-
-        timerElement.innerText = "Time: " + timeLeft;
-
-        if(timeLeft === 2){
-            playSound(soundWarning);
-        }
-
-        if(timeLeft <= 0){
-
-            clearInterval(timer);
-
-            totalIncorrect++;
-
-            playSound(soundWrong);
-
-            nextRound();
-        }
-
-    },1000);
+/* =============================== */
+/* TOP BAR */
+/* =============================== */
+
+.top-bar {
+    background: white;
+    padding: 16px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+    box-sizing: border-box;
 }
 
-// ==========================
-// CHECK ANSWER
-// ==========================
-
-function checkAnswer(choice){
-
-    clearInterval(timer);
-
-    if(choice === correctAnswer){
-
-        score += 2;
-
-        playSound(soundCorrect);
-
-    } else {
-
-        totalIncorrect++;
-
-        playSound(soundWrong);
-    }
-
-    nextRound();
+.top-bar div{
+    font-size:20px;
+    font-weight:bold;
 }
 
-// ==========================
-// ODD EVEN MODE
-// ==========================
-
-function generateOddEven(range){
-
-    playSound(soundReveal);
-
-    let num = Math.floor(Math.random() * range) + 1;
-
-    document.getElementById("instruction").innerText =
-    "Is the number Odd or Even?";
-
-    document.getElementById("mainDisplay").innerHTML = num;
-
-    document.getElementById("leftBtn").innerText = "ODD";
-    document.getElementById("rightBtn").innerText = "EVEN";
-
-    if(num % 2 === 0){
-        correctAnswer = "RIGHT";
-    } else {
-        correctAnswer = "LEFT";
-    }
+.top-bar-lives{
+    color:#df7658;
 }
 
-// ==========================
-// GAME MODE: COMPARISON
-// ==========================
-function generateComparison(range) {
-
-    playSound(soundReveal);
-
-    let num1 = Math.floor(Math.random() * range) + 1;
-    let num2 = Math.floor(Math.random() * range) + 1;
-
-    while (num1 === num2) {
-        num2 = Math.floor(Math.random() * range) + 1;
-    }
-
-    let askBigger = Math.random() < 0.5;
-
-    // ACCESSIBLE INSTRUCTION
-    if (askBigger) {
-        document.getElementById("instruction").innerText =
-            "Tap the BIGGER number side";
-    } else {
-        document.getElementById("instruction").innerText =
-            "Tap the SMALLER number side";
-    }
-
-    // SHOW NUMBERS
-    document.getElementById("mainDisplay").innerHTML = `
-        <div class="option-container">
-            <div>${num1}</div>
-            <div>${num2}</div>
-        </div>
-    `;
-
-    // BUTTON LABELS
-    let leftBtn = document.getElementById("leftBtn");
-    let rightBtn = document.getElementById("rightBtn");
-
-    leftBtn.innerText = "LEFT";
-    rightBtn.innerText = "RIGHT";
-
-    leftBtn.className = "";
-    rightBtn.className = "";
-
-    // CORRECT ANSWER LOGIC
-    if (askBigger) {
-        correctAnswer = (num1 > num2) ? "LEFT" : "RIGHT";
-    } else {
-        correctAnswer = (num1 < num2) ? "LEFT" : "RIGHT";
-    }
-}
-// ==========================
-// ARITHMETIC MODE
-// ==========================
-
-function generateArithmetic(range){
-
-    playSound(soundReveal);
-
-    let num1 = Math.floor(Math.random() * range) + 1;
-    let num2 = Math.floor(Math.random() * range) + 1;
-
-    let answer = num1 + num2;
-
-    let wrongAnswer = answer + 2;
-
-    let leftSide;
-    let rightSide;
-
-    if(Math.random() < 0.5){
-
-        leftSide = answer;
-        rightSide = wrongAnswer;
-
-        correctAnswer = "LEFT";
-
-    } else {
-
-        leftSide = wrongAnswer;
-        rightSide = answer;
-
-        correctAnswer = "RIGHT";
-    }
-
-    document.getElementById("instruction").innerText =
-    "What is the correct answer?";
-
-    document.getElementById("mainDisplay").innerHTML = `
-        <div class="arithmetic-container">
-            <div class="equation">${num1} + ${num2} = ?</div>
-
-            <div class="choices">
-                <div>${leftSide}</div>
-                <div>${rightSide}</div>
-            </div>
-        </div>
-    `;
-
-    document.getElementById("leftBtn").innerText = "FIRST";
-document.getElementById("rightBtn").innerText = "SECOND";
+#timerDisplay{
+    padding:6px 12px;
+    background:#fdf2f0;
+    border-radius:10px;
+    color:#df7658;
+    display:none;
 }
 
-// ==========================
-// RANDOM MODE
-// ==========================
+/* =============================== */
+/* GAME BOX */
+/* =============================== */
 
-function pickRandomType(range){
+.game-box {
+    background: white;
+    min-height: 220px;
+    padding: 18px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 18px;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.05);
+    box-sizing: border-box;
+}
 
-    let r = Math.random();
+/* =============================== */
+/* OBJECTIVE */
+/* =============================== */
 
-    if(r < 0.33){
-        generateOddEven(range);
+.objective{
+    font-size:18px;
+    color:#666;
+    margin-bottom:20px;
+    text-align:center;
+}
+
+/* =============================== */
+/* INSTRUCTION */
+/* =============================== */
+
+#instruction {
+    font-size: 34px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #000;
+}
+
+/* =============================== */
+/* MAIN DISPLAY */
+/* =============================== */
+
+#mainDisplay {
+    font-size: 72px;
+    font-weight: bold;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #000;
+}
+
+/* =============================== */
+/* OPTION CONTAINER */
+/* =============================== */
+
+.option-container {
+    display: flex;
+    justify-content: center;
+    gap: 100px;
+    width: 100%;
+    font-size: 58px;
+    font-weight: bold;
+}
+
+/* =============================== */
+/* ARITHMETIC */
+/* =============================== */
+
+.arithmetic-container{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+.equation{
+    font-size:55px;
+    margin-bottom:35px;
+}
+
+.choices {
+    display: flex;
+    gap: 100px;
+    font-size: 58px;
+    font-weight: bold;
+}
+
+/* =============================== */
+/* BUTTONS */
+/* =============================== */
+
+.buttons{
+    display:flex;
+    gap:20px;
+    width:100%;
+}
+
+button {
+    flex: 1;
+    padding: 22px;
+    border: none;
+    border-radius: 20px;
+    font-size: 34px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+    text-align: center;
+}
+
+button:active{
+    transform:scale(0.97);
+}
+
+/* =============================== */
+/* BACK BUTTON */
+/* =============================== */
+
+#backBtn{
+    flex: unset;
+    padding: 10px 18px;
+    font-size: 18px;
+    border-radius: 12px;
+    background: #444;
+    color: white;
+    width: auto;
+}
+
+/* =============================== */
+/* GLOBAL BACK BUTTON */
+/* =============================== */
+
+#backBtn{
+
+    position: fixed;
+
+    top: 20px;
+    left: 20px;
+
+    z-index: 999;
+
+    padding: 12px 20px;
+
+    font-size: 18px;
+
+    border-radius: 12px;
+
+    background: #444;
+
+    color: white;
+
+    border: none;
+
+    cursor: pointer;
+
+    width: auto;
+
+    flex: unset;
+}
+
+/* =============================== */
+/* SOUND BUTTON */
+/* =============================== */
+
+#soundBtn{
+
+    position: fixed;
+
+    top: 20px;
+    right: 20px;
+
+    z-index: 999;
+
+    padding: 12px 20px;
+
+    font-size: 18px;
+
+    border-radius: 12px;
+
+    background: #2f84d6;
+
+    color: white;
+
+    border: none;
+
+    cursor: pointer;
+
+    width: auto;
+
+    flex: unset;
+}
+
+/* =============================== */
+/* INTRO BACK BUTTON */
+/* =============================== */
+
+#introBackBtn{
+
+    position: absolute;
+
+    top: 20px;
+    left: 20px;
+
+    padding: 12px 20px;
+
+    font-size: 18px;
+
+    border-radius: 12px;
+
+    background: #444;
+
+    color: white;
+
+    border: none;
+
+    cursor: pointer;
+
+    z-index: 10000;
+
+    width: auto;
+}
+
+/* =============================== */
+/* DARK MODE SUPPORT */
+/* =============================== */
+
+@media (prefers-color-scheme: dark){
+
+    body{
+        background:#121212;
+        color:white;
     }
-    else if(r < 0.66){
-        generateComparison(range);
+
+    .top-bar{
+        background:#1e1e1e;
+        box-shadow:0px 2px 8px rgba(255,255,255,0.05);
     }
-    else{
-        generateArithmetic(20);
+
+    .game-box{
+        background:#1e1e1e;
+        box-shadow:0px 2px 8px rgba(255,255,255,0.05);
+    }
+
+    #instruction,
+    #mainDisplay,
+    .equation,
+    .choices,
+    .option-container{
+        color:white;
+    }
+
+    .intro-card{
+        background:#1e1e1e;
+        color:white;
+    }
+
+    .intro-text{
+        color:#e0e0e0;
+    }
+
+    .how-to-play{
+
+        background:#2b2b2b;
+
+        color:white;
+    }
+
+    .how-to-play h3,
+    .how-to-play p{
+
+        color:white;
+    }
+
+    #timerDisplay{
+        background:#332222;
+        color:#ff9f8a;
+    }
+
+    #backBtn{
+        background:#666;
+    }
+
+    #soundBtn{
+        background:#3b6fa5;
     }
 }
 
-// ==========================
-// BUTTON EVENTS
-// ==========================
+/* =============================== */
+/* BUTTON COLORS */
+/* =============================== */
 
-document.getElementById("leftBtn")
-.addEventListener("click", function(){
+#leftBtn{
+    background:#df7658;
+}
 
-    checkAnswer("LEFT");
+#rightBtn{
+    background:#1d84d6;
+}
 
-});
+/* =============================== */
+/* MOBILE RESPONSIVE */
+/* =============================== */
 
-document.getElementById("rightBtn")
-.addEventListener("click", function(){
+@media(max-width:768px){
 
-    checkAnswer("RIGHT");
-
-});
-// ==========================
-// BACK BUTTON
-// ==========================
-
-document.getElementById("backBtn")
-.addEventListener("click", function(){
-
-    let confirmExit = confirm("Exit the game?");
-
-    if(confirmExit){
-
-        window.location.href = "index.html";
-
-        // OR use this if you want browser back:
-        // history.back();
-    }
-});
-// ==========================
-// INTRO BACK BUTTON
-// ==========================
-
-document.getElementById("introBackBtn")
-.addEventListener("click", function(){
-
-    let confirmExit = confirm("Exit the game?");
-
-    if(confirmExit){
-
-        window.location.href = "index.html";
-
-        // OR:
-        // history.back();
-    }
-});
-// ==========================
-// KEYBOARD SUPPORT
-// ==========================
-
-document.addEventListener("keydown", function(e){
-
-    if(e.key === "ArrowLeft"){
-        checkAnswer("LEFT");
+    body{
+        padding:12px;
+        align-items:flex-start;
     }
 
-    if(e.key === "ArrowRight"){
-        checkAnswer("RIGHT");
+    .container{
+        width:100%;
+        margin-top:70px;
     }
-});
+
+    .top-bar{
+        padding:14px;
+        gap:10px;
+    }
+
+    .top-bar div{
+        font-size:16px;
+    }
+
+    .game-box{
+        min-height:420px;
+        padding:25px 18px;
+    }
+
+    .objective{
+        font-size:14px;
+    }
+
+    #instruction{
+        font-size:34px;
+        margin-bottom:25px;
+    }
+
+    #mainDisplay{
+        font-size:90px;
+    }
+
+    .option-container{
+        gap:50px;
+        font-size:48px;
+    }
+
+    .equation{
+        font-size:34px;
+    }
+
+    .choices{
+        gap:50px;
+        font-size:48px;
+    }
+
+    .buttons{
+        gap:14px;
+    }
+
+    button{
+        padding:22px 10px;
+        font-size:32px;
+
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        text-align:center;
+    }
+
+    /* =============================== */
+    /* MOBILE BACK BUTTONS */
+    /* =============================== */
+
+    #backBtn,
+    #introBackBtn{
+
+        top:12px;
+        left:12px;
+
+        padding:10px 16px;
+
+        font-size:16px;
+    }
+
+    #soundBtn{
+
+        top:12px;
+        right:12px;
+
+        padding:10px 16px;
+
+        font-size:16px;
+    }
+}
+
+/* ===================================== */
+/* INTRO SCREEN */
+/* ===================================== */
+
+.intro-screen{
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0,0,0,0.55);
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+}
+
+.intro-card{
+
+    background: white;
+
+    width: min(90vw, 520px);
+
+    padding: 35px;
+
+    border-radius: 24px;
+
+    text-align: center;
+
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.intro-card h1{
+
+    font-size: 38px;
+
+    margin-bottom: 15px;
+}
+
+.intro-text{
+
+    font-size: 18px;
+
+    margin-bottom: 25px;
+
+    color: #444;
+}
+
+.how-to-play{
+
+    text-align: left;
+
+    margin-bottom: 30px;
+
+    background: #f7f7f7;
+
+    padding: 20px;
+
+    border-radius: 16px;
+}
+
+.how-to-play h3{
+
+    margin-bottom: 12px;
+}
+
+.how-to-play p{
+
+    margin-bottom: 10px;
+
+    line-height: 1.5;
+}
+
+#startGameBtn{
+
+    width: 100%;
+
+    padding: 16px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    background: #2f84d6;
+
+    color: white;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+#startGameBtn:hover{
+
+    opacity: 0.9;
+}
+
+/* =============================== */
+/* DARK MODE INTRO FIX */
+/* =============================== */
+
+@media (prefers-color-scheme: dark){
+
+    .intro-card{
+
+        background:#1e1e1e !important;
+
+        color:white !important;
+    }
+
+    .intro-text{
+
+        color:#e0e0e0 !important;
+    }
+
+    .how-to-play{
+
+        background:#2b2b2b !important;
+
+        color:white !important;
+    }
+
+    .how-to-play h3,
+    .how-to-play p{
+
+        color:white !important;
+    }
+}
