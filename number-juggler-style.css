@@ -502,3 +502,34 @@ button:active{
 
     opacity: 0.9;
 }
+/* =============================== */
+/* DARK MODE INTRO FIX */
+/* =============================== */
+
+@media (prefers-color-scheme: dark){
+
+    .intro-card{
+
+        background:#1e1e1e !important;
+
+        color:white !important;
+    }
+
+    .intro-text{
+
+        color:#e0e0e0 !important;
+    }
+
+    .how-to-play{
+
+        background:#2b2b2b !important;
+
+        color:white !important;
+    }
+
+    .how-to-play h3,
+    .how-to-play p{
+
+        color:white !important;
+    }
+}
