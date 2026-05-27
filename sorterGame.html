@@ -246,6 +246,50 @@ canvas {
     font-size: 13px;
   }
 }
+ /* 💻 LAPTOP / DESKTOP FIX */
+@media (min-width: 900px) {
+
+  #gameScreen {
+    height: 100vh;
+    overflow: hidden;   /* ✅ stop scroll ONLY on laptop */
+    justify-content: flex-start;
+  }
+
+  .top-bar {
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .rule {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  canvas {
+    width: 280px;   /* ✅ reduce size */
+    height: 280px;
+    max-width: 280px;
+    max-height: 280px;
+  }
+
+  .buttons {
+    margin-top: 12px;
+  }
+
+  .buttons button {
+    height: 42px;
+    font-size: 13px;
+  }
+
+  #result {
+    font-size: 16px;
+    margin-top: 8px;
+  }
+
+  #finalScore {
+    font-size: 15px;
+  }
+} 
 
 /* LANDSCAPE MODE FIX */
 @media (orientation: landscape) and (max-height: 520px) {
