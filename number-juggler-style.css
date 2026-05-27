@@ -274,11 +274,20 @@ button:active{
     }
 
     .intro-text{
-        color:#ccc;
+        color:#e0e0e0;
     }
 
     .how-to-play{
+
         background:#2b2b2b;
+
+        color:white;
+    }
+
+    .how-to-play h3,
+    .how-to-play p{
+
+        color:white;
     }
 
     #timerDisplay{
