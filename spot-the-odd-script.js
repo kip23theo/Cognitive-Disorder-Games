@@ -8,6 +8,7 @@ let lives = 5;
 let correctAnswer = "";
 let timer;
 let timeLeft;
+let soundEnabled = true;
 
 // =======================
 // SOUNDS
@@ -372,6 +373,8 @@ function nextRound(){
 // =======================
 function playSound(sound){
 
+    if(!soundEnabled) return;
+
     sound.pause();
 
     sound.currentTime = 0;
@@ -395,6 +398,61 @@ document.getElementById("rightBtn")
 .addEventListener("click", function(){
 
     checkAnswer("RIGHT");
+});
+
+// =======================
+// BACK BUTTON
+// =======================
+
+document.getElementById("backBtn")
+.addEventListener("click", function(){
+
+    let confirmExit = confirm("Exit the game?");
+
+    if(confirmExit){
+
+        window.location.href = "index.html";
+
+        // OR:
+        // history.back();
+    }
+});
+
+// =======================
+// INTRO BACK BUTTON
+// =======================
+
+document.getElementById("introBackBtn")
+.addEventListener("click", function(){
+
+    let confirmExit = confirm("Exit the game?");
+
+    if(confirmExit){
+
+        window.location.href = "index.html";
+
+        // OR:
+        // history.back();
+    }
+});
+
+// =======================
+// SOUND TOGGLE
+// =======================
+
+document.getElementById("soundBtn")
+.addEventListener("click", function(){
+
+    soundEnabled = !soundEnabled;
+
+    if(soundEnabled){
+
+        this.innerText = "🔊 Sound ON";
+
+    } else {
+
+        this.innerText = "🔇 Sound OFF";
+    }
 });
 
 // =======================
