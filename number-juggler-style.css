@@ -37,6 +37,7 @@ body{
     box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
     box-sizing: border-box;
 }
+
 .top-bar div{
     font-size:20px;
     font-weight:bold;
@@ -71,6 +72,7 @@ body{
     box-shadow: 0px 2px 8px rgba(0,0,0,0.05);
     box-sizing: border-box;
 }
+
 /* =============================== */
 /* OBJECTIVE */
 /* =============================== */
@@ -92,6 +94,7 @@ body{
     text-align: center;
     color: #000;
 }
+
 /* =============================== */
 /* MAIN DISPLAY */
 /* =============================== */
@@ -106,6 +109,7 @@ body{
     text-align: center;
     color: #000;
 }
+
 /* =============================== */
 /* OPTION CONTAINER */
 /* =============================== */
@@ -118,6 +122,7 @@ body{
     font-size: 58px;
     font-weight: bold;
 }
+
 /* =============================== */
 /* ARITHMETIC */
 /* =============================== */
@@ -139,6 +144,7 @@ body{
     font-size: 58px;
     font-weight: bold;
 }
+
 /* =============================== */
 /* BUTTONS */
 /* =============================== */
@@ -165,6 +171,7 @@ button {
 button:active{
     transform:scale(0.97);
 }
+
 /* =============================== */
 /* BACK BUTTON */
 /* =============================== */
@@ -178,6 +185,7 @@ button:active{
     color: white;
     width: auto;
 }
+
 /* =============================== */
 /* GLOBAL BACK BUTTON */
 /* =============================== */
@@ -198,6 +206,38 @@ button:active{
     border-radius: 12px;
 
     background: #444;
+
+    color: white;
+
+    border: none;
+
+    cursor: pointer;
+
+    width: auto;
+
+    flex: unset;
+}
+
+/* =============================== */
+/* SOUND BUTTON */
+/* =============================== */
+
+#soundBtn{
+
+    position: fixed;
+
+    top: 20px;
+    right: 20px;
+
+    z-index: 999;
+
+    padding: 12px 20px;
+
+    font-size: 18px;
+
+    border-radius: 12px;
+
+    background: #2f84d6;
 
     color: white;
 
@@ -239,6 +279,7 @@ button:active{
 
     width: auto;
 }
+
 /* =============================== */
 /* DARK MODE SUPPORT */
 /* =============================== */
@@ -298,7 +339,12 @@ button:active{
     #backBtn{
         background:#666;
     }
+
+    #soundBtn{
+        background:#3b6fa5;
+    }
 }
+
 /* =============================== */
 /* BUTTON COLORS */
 /* =============================== */
@@ -396,7 +442,18 @@ button:active{
 
         font-size:16px;
     }
+
+    #soundBtn{
+
+        top:12px;
+        right:12px;
+
+        padding:10px 16px;
+
+        font-size:16px;
+    }
 }
+
 /* ===================================== */
 /* INTRO SCREEN */
 /* ===================================== */
@@ -502,6 +559,7 @@ button:active{
 
     opacity: 0.9;
 }
+
 /* =============================== */
 /* DARK MODE INTRO FIX */
 /* =============================== */
